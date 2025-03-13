@@ -16,10 +16,6 @@ const LoginScreen = () => {
                     <MyTextinput placeholder='Password' secureTextEntry/>
                     <Text style={styles.textdonthave} >Don't have an account yet? <a href="../signup.jsx"> Sign Up</a></Text>
                     <MyButton title={"Login"}/>
-
-                    <Text style={styles.orText}>OR</Text>
-
-                    <SocialMedia />
                 </View>
                 
             </ImageBackground>
