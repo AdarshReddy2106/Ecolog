@@ -18,9 +18,13 @@ const SignUpScreen = () => {
                     <MyTextinput placeholder='Enter E-mail or User Name' />
                     <MyTextinput placeholder='Password' secureTextEntry/>
                     <MyTextinput placeholder='Confirm Password' secureTextEntry/>
-                    <TouchableOpacity onPress={() => router.push("/Login-Page")}> {/* Updated navigation */}
-                        <Text style={styles.textdonthave}>Already have an account? <Text style={{color: 'blue'}}>Login</Text></Text>
-                    </TouchableOpacity>
+                     {/* Updated navigation */}
+                    <Text style={styles.textdonthave}>Already have an account?</Text>
+                        <TouchableOpacity onPress={() => router.push("/Login-Page")}> 
+                            <Text style={styles.navigate_button}>Login</Text>
+                        </TouchableOpacity>
+                    
+                    
                     
                     <MyButton title={"SignUp"}/>
 
@@ -66,11 +70,17 @@ const styles=StyleSheet.create({
         alignSelf:'flex-end',
         marginRight:10,
         color:"black",
-        marginBottom:15
+        marginBottom:5
     },
     orText:{
         fontsize:20,
         color:"gray",
         marginTop:20
+    },
+    navigate_button:{
+        color:"blue",
+        marginLeft:225,
+        marginBottom:10
     }
+
 })

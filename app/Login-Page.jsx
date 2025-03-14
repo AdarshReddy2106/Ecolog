@@ -9,7 +9,7 @@ const LoginScreen = () => {
     const router = useRouter(); // Replace useNavigation with useRouter
 
     return(
-        <View style={StyleSheet.container}>
+        <View style={styles.container}>
             <ImageBackground source={require("../assets/images/blackwp.png")}
             style={styles.imagebackground}>
                 <Text style={styles.title}>App name</Text>
@@ -17,10 +17,15 @@ const LoginScreen = () => {
                 <View style={styles.inputcontainer}>
                     <MyTextinput placeholder='Enter E-mail or User Name' />
                     <MyTextinput placeholder='Password' secureTextEntry/>
-                    <TouchableOpacity onPress={() => router.push("/Sign-Up")}> {/* Updated navigation */}
-                        <Text style={styles.textdonthave}>Don't have an account yet? <Text style={{color: 'blue'}}>Sign Up</Text></Text>
+                     {/* Updated navigation */}
+                        <Text style={styles.textdonthave}>Don't have an account yet? </Text>
+                            <TouchableOpacity onPress={() => router.push("/Sign-Up")}>
+                                <Text style={styles.navigate_button}>Sign Up</Text>
+                            </TouchableOpacity>
+                        
+                    <TouchableOpacity onPress={() => router.push("/TreeDataForm")}>
+                        <MyButton title={"Login"}/>
                     </TouchableOpacity>
-                    <MyButton title={"Login"}/>
                 </View>
                 <Text style={styles.orText}>OR</Text>
                 <SocialMedia />
@@ -63,8 +68,13 @@ const styles=StyleSheet.create({
         marginBottom:15
     },
     orText:{
-        fontsize:20,
+        fontSize:20,
         color:"gray",
         marginTop:20
+    },
+    navigate_button:{
+        color:"blue",
+        marginLeft:225,
+        marginBottom:10
     }
 })
