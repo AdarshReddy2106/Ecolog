@@ -1,10 +1,13 @@
 import MyButton from "@/app/MyButton";
-import { ImageBackground, StyleSheet, Text } from "react-native";
+import { ImageBackground, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { View } from "react-native";
 import MyTextinput from "./MyTextInput";
 import SocialMedia from "./SocialMedia";
+import { useRouter } from 'expo-router';
 
 const LoginScreen = () => {
+    const router = useRouter(); // Replace useNavigation with useRouter
+
     return(
         <View style={StyleSheet.container}>
             <ImageBackground source={require("../assets/images/blackwp.png")}
@@ -14,10 +17,13 @@ const LoginScreen = () => {
                 <View style={styles.inputcontainer}>
                     <MyTextinput placeholder='Enter E-mail or User Name' />
                     <MyTextinput placeholder='Password' secureTextEntry/>
-                    <Text style={styles.textdonthave} >Don't have an account yet? <a href="../signup.jsx"> Sign Up</a></Text>
+                    <TouchableOpacity onPress={() => router.push("/Sign-Up")}> {/* Updated navigation */}
+                        <Text style={styles.textdonthave}>Don't have an account yet? <Text style={{color: 'blue'}}>Sign Up</Text></Text>
+                    </TouchableOpacity>
                     <MyButton title={"Login"}/>
                 </View>
-                
+                <Text style={styles.orText}>OR</Text>
+                <SocialMedia />
             </ImageBackground>
 
         </View>
