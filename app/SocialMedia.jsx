@@ -4,10 +4,6 @@ import React from 'react'
 const SocialMedia = () => {
   return (
     <View style={styles.container}>
-      <Image source={require("../assets/SocialMediaIcons/facebook.png")}
-      style={styles.image}></Image>
-      <Image source={require("../assets/SocialMediaIcons/twitter.png")}
-      style={styles.twittericon}></Image>
       <Image source={require("../assets/SocialMediaIcons/google.png")}
       style={styles.image}></Image>
     </View>
