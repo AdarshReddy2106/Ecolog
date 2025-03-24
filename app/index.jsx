@@ -2,89 +2,65 @@ import { View, Text, StyleSheet, ImageBackground, Pressable } from 'react-native
 import React from 'react'
 import { Link } from 'expo-router'
 
+import HomeScreen from './HomeScreen';
+import LoginScreen from './LoginScreen';
+import SignUpScreen from './SignUpScreen';
+import TreeDataForm from './TreeDataForm';
+import BranchDetailsForm from './BranchDetailsForm';
+import UploadScreen from './UploadScreen';
+import AdminDashboard from './AdminDashboard';
 
-import LoginScreen from './Login-Page';
-import SignUpScreen from './Sign-Up';
-import forestImg from "@/assets/images/forest.png"
+const Stack = createNativeStackNavigator();
 
-
-const app = () => {
+function App() {
   return (
-    <View style={styles.container}>
-      <ImageBackground
-      source={forestImg}
-      resizeMode = "cover"
-      style={styles.image}
-      >
-      <Text style={styles.title}>Tree Data Collection</Text>
+    <AuthProvider>
+      <SafeAreaView style={{ flex: 1 }}>
+          <Stack.Navigator initialRouteName="Home">
+            {/* Auth Screens */}
+            <Stack.Screen 
+              name="Home" 
+              component={HomeScreen} 
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen 
+              name="Login" 
+              component={LoginScreen} 
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen 
+              name="Signup" 
+              component={SignUpScreen} 
+              options={{ headerShown: false }}
+            />
 
-      <Link href="/Login-Page" style={{ marginHorizontal: 'auto' }} 
-      asChild>
-      <Pressable style={styles.button}>
-      <Text style={styles.buttonText}>Login</Text>
-      </Pressable>
-      </Link>
+            {/* Main App Screens */}
+            <Stack.Screen 
+              name="TreeDataForm" 
+              component={TreeDataForm} 
+              options={{ title: 'Tree Data Entry' }}
+            />
+            <Stack.Screen 
+              name="BranchDetailsForm" 
+              component={BranchDetailsForm} 
+              options={{ title: 'Branch Details' }}
+            />
+            <Stack.Screen 
+              name="UploadScreen" 
+              component={UploadScreen} 
+              options={{ title: 'Upload Data' }}
+            />
 
-      <Link href="/Sign-Up" style={{ marginHorizontal: 'auto' }} 
-      asChild>
-      <Pressable style={styles.button}>
-      <Text style={styles.buttonText}>Sign Up</Text>
-      </Pressable>
-      </Link>
-      </ImageBackground>
-      
-    </View>
-  )
+            {/* Admin Screens */}
+            <Stack.Screen 
+              name="AdminDashboard" 
+              component={AdminDashboard} 
+              options={{ title: 'Admin Dashboard' }}
+            />
+          </Stack.Navigator>
+      </SafeAreaView>
+    </AuthProvider>
+  );
 }
 
-export default app
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: 'column',
-  },
-  image: {
-    width: '100%',
-    heigth: '100%',
-    flex: 1,
-    resizeMode: 'cover',
-    justifyContent: 'center',
-  },
-  title: {
-    color: 'white',
-    fontSize: 42,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    // backgroundColor: 'rgba(0,0,0,0.5)',
-    marginBottom: 120,
-    marginTop:-50,
-   
-  },
-  link: {
-    color: 'white',
-    fontSize: 42,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    textDecorationLine: 'underline',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    padding: 4,
-  },
-  button: {
-    height: 60,
-    width:150,
-    borderRadius: 20,
-    justifyContent: 'center',
-    backgroundColor: 'rgba(0,0,0,0.75)',
-    padding: 6,
-    marginBottom: 50,
-
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    padding: 4,
-  }
-})
+export default App;
