@@ -38,8 +38,7 @@ const LoginScreen = () => {
                     </View>
 
                     <MyButton title="Login" onPress={handleLogin} />
-                    <Text style={styles.orText}>OR</Text>``
-                    <SocialMedia />
+                    
                 </View>
             </ImageBackground>
         </View>
