@@ -1,61 +1,77 @@
-import MyButton from "./MyButton";
-import { ImageBackground, StyleSheet, Text, TouchableOpacity, View, Alert } from "react-native";
+import React, { useState } from "react";
+import { ImageBackground, StyleSheet, Text, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import MyTextinput from "./MyTextInput";
-import SocialMedia from "./SocialMedia";
-import { auth, db} from "./firebaseConfig";
+import { auth, db } from "./firebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
-import { useState } from "react";
-import React from "react";
+import MyButton from "./MyButton";
+import MyTextinput from "./MyTextInput";
 
 const SignUpScreen = () => {
     const navigation = useNavigation();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const [message, setMessage] = useState("");
 
-    const handleSignUp = async() => {
-        if (password !== confirmPassword) {
-            Alert.alert('Error', "Passwords do not match!");
+    const handleSignUp = async () => {
+        setMessage("");
+
+        if (!email || !password || !confirmPassword) {
+            setMessage("All fields are required!");
             return;
         }
-        try{
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            await setDoc(doc(db, 'users', userCredential.user.uid),
-        {
-            email: email,
-            createdAt: new Date(),
-            role: 'user'
-        });
 
-        navigation.navigate('LoginScreen');
-    }
-        catch (error) { 
-            Alert.alert('Error', error.message);
+        if (password.length < 6) {
+            setMessage("Password must be at least 6 characters long.");
+            return;
         }
+
+        if (password !== confirmPassword) {
+            setMessage("Passwords do not match!");
+            return;
+        }
+
+        try {
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            setMessage("You got registered successfully, directing to login page...");
+            setTimeout(() => {navigation.navigate("LoginScreen")}, 1500);
+
+            await setDoc(doc(db, "users", userCredential.user.uid), {
+                email: email,
+                createdAt: new Date(),
+                role: "user",
+            });
+
+            // Show success message and navigate to login after 2 seconds
+            
+            
+        } catch (error) {
+            if (error.code === "auth/email-already-in-use") {
+                setMessage("Email is already in use, please login to continue.");
+                
+            } else {
+                setMessage(error.message);
+            }
+            setTimeout(() => {navigation.navigate("LoginScreen")}, 3000);
+        }
+
     };
-    
+
     return (
         <View style={styles.container}>
             <ImageBackground source={require("../assets/images/blackwp.png")} style={styles.imagebackground}>
                 <Text style={styles.title}>App Name</Text>
                 <View style={styles.inputContainer}>
-                    <MyTextinput placeholder="Enter E-mail or User Name" value={email} onChangeText={setEmail} />
+                    <MyTextinput placeholder="Enter E-mail" value={email} onChangeText={setEmail} />
                     <MyTextinput placeholder="Password" secureTextEntry value={password} onChangeText={setPassword} />
                     <MyTextinput placeholder="Confirm Password" secureTextEntry value={confirmPassword} onChangeText={setConfirmPassword} />
 
-                    <View style={styles.signupContainer}>
-                        <Text style={styles.textAlreadyHave}>Already have an account? </Text>
-                        <TouchableOpacity onPress={() => navigation.navigate("LoginScreen")}>
-                            <Text style={styles.linkButton}>Login</Text>
-                        </TouchableOpacity>
-                    </View>
 
-                    <TouchableOpacity style={styles.button} onPress={handleSignUp}>
-                        <Text style={styles.buttonText}>Sign Up</Text>
-                    </TouchableOpacity>
-                    <SocialMedia />
+                    {/* Display success or error message */}
+                    {message ? <Text style={styles.messageText}>{message}</Text> : null}
+
+                    <MyButton title="Sign Up" onPress={handleSignUp} />
                 </View>
             </ImageBackground>
         </View>
@@ -88,24 +104,15 @@ const styles = StyleSheet.create({
         marginTop: 30,
         padding: 20,
     },
-    signupContainer: {
-        flexDirection: "row",
-        alignItems: "center",
-        alignSelf: "flex-end",
-        marginRight: 10,
-        marginBottom: 5,
-    },
-    textAlreadyHave: {
-        color: "black",
-    },
-    linkButton: {
-        color: "blue",
-        fontWeight: "bold",
-        marginLeft: 5,
-    },
     orText: {
-        fontSize: 20, // Fixed "fontsize" typo
+        fontSize: 20,
         color: "gray",
-        marginTop: 20,
+        marginTop: 20,
     },
+    messageText: {
+        color: "green",
+        fontSize: 14,
+        marginBottom: 10,
+        textAlign: "center",
+    },
 });
