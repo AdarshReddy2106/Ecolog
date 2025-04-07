@@ -13,6 +13,8 @@ import BranchDetailsForm from './BranchDetailsForm';
 import UploadScreen from './UploadScreen';
 import AdminDashboard from './AdminDashboard';
 import TreeDataListScreen from './TreeDataListScreen';
+import ViewExcel from './ViewExcel';
+import Admin from './Admin';
 const Stack = createNativeStackNavigator();
 
 function MainNavigator() {
@@ -55,7 +57,15 @@ function MainNavigator() {
                 component={TreeDataListScreen} 
                 options={{ title: 'Saved Trees' }}
               />
-              
+              <Stack.Screen 
+                name="ViewExcel" 
+                component={ViewExcel}
+              />
+              <Stack.Screen 
+                  name="Admin" 
+                  component={Admin} 
+                  options={{ title: "Admin" }}
+              />
               <Stack.Screen 
                 name="AdminDashboard" 
                 component={AdminDashboard} 

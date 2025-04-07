@@ -6,8 +6,6 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import MyButton from "./MyButton";
 import MyTextinput from "./MyTextInput";
 
-
-
 const LoginScreen = () => {
     const navigation = useNavigation();
     const [email, setEmail] = useState("");
@@ -19,10 +17,18 @@ const LoginScreen = () => {
             const user = userCredential.user;
             
             // Check if user is admin
-            if (["admin@example.com", "a@gmail.com"].includes(user.email)) {
-                navigation.navigate('View Excel');
+            if (user && user.email && ["admin@example.com", "a@gmail.com"].includes(user.email)) {
+                // Navigate to AdminDashboard
+                navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'Admin' }],
+                });
             } else {
-                navigation.navigate('TreeDataForm');
+                // Navigate to TreeDataForm for regular users
+                navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'TreeDataForm' }],
+                });
             }
         } catch(error) { 
             Alert.alert('Error', error?.message || "An unknown error occurred.")
@@ -93,9 +99,4 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         marginLeft: 5,
     },
-    orText: {
-        fontSize: 20,
-        color: "gray",
-        marginTop: 20,
-    },
 });
