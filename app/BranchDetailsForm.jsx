@@ -62,16 +62,29 @@ export default function BranchDetailsForm() {
   const [diameters, setDiameters] = useState(Array(branches).fill(''));
 
   const handleNext = () => {
-    if (diameters.some(diameter => diameter === '')) {
-      Alert.alert('Error', 'Enter diameter for all branches');
+    if (!treeId || !height || !branches ) {
+      Alert.alert("Error", "Please enter all required details before proceeding.");
       return;
     }
-    navigation.navigate('UploadScreen', { treeId, height, branches, branchDiameters: diameters });
+  
+    console.log("Navigating to UploadScreen with:", {
+      treeId,
+      height,
+      branches,
+      branchDiameters: diameters,
+    });
+  
+    navigation.navigate("UploadScreen", {
+      treeId,
+      height,
+      branches,
+      branchDiameters: diameters,
+    });
   };
-
   return (
-    <Container>
-      <ScrollView>
+    <ScrollView>
+      <Container>
+      
         <Card>
           <View style={{ alignItems: 'center', marginBottom: 10 }}>
             <Image source={require('../assets/images/tree-icon.png')} style={{ width: 80, height: 80 }} />
@@ -91,7 +104,8 @@ export default function BranchDetailsForm() {
             <ButtonText>Next</ButtonText>
           </Button>
         </Card>
-      </ScrollView>
-    </Container>
+      
+      </Container>
+    </ScrollView>
   );
 }

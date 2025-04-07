@@ -1,90 +1,143 @@
-import { View, Text, StyleSheet, ImageBackground, Pressable } from 'react-native'
-import React from 'react'
+import { View, Text, StyleSheet, TouchableOpacity, ImageBackground } from "react-native";
+import React, { useState, useEffect } from "react";
 import { Link } from 'expo-router'
 
 
-import LoginScreen from './Login-Page';
-import SignUpScreen from './Sign-Up';
+import LoginScreen from './LoginScreen';
+import SignUpScreen from './SignUpScreen';
 import forestImg from "@/assets/images/forest.png"
+import { useNavigation } from "@react-navigation/native";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "./firebaseConfig";
 
+export default function HomeScreen() {
+  const navigation = useNavigation();
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [user, setUser] = useState(null);
 
-const HomeScreen = () => {
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+      if (user) {
+        setIsAdmin(["admin@example.com", "a@gmail.com"].includes(user.email));
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await auth.signOut();
+      navigation.navigate("Login");
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
+  };
+
   return (
-    <View style={styles.container}>
-      <ImageBackground
-      source={forestImg}
-      resizeMode = "cover"
-      style={styles.image}
-      >
-      <Text style={styles.title}>Tree Data Collection</Text>
-
-      <Link href="/Login-Page" style={{ marginHorizontal: 'auto' }} 
-      asChild>
-      <Pressable style={styles.button}>
-      <Text style={styles.buttonText}>Login</Text>
-      </Pressable>
-      </Link>
-
-      <Link href="/Sign-Up" style={{ marginHorizontal: 'auto' }} 
-      asChild>
-      <Pressable style={styles.button}>
-      <Text style={styles.buttonText}>Sign Up</Text>
-      </Pressable>
-      </Link>
-      </ImageBackground>
-      
-    </View>
-  )
+    <ImageBackground
+      source={require("../assets/images/blackwp.png")}
+      style={styles.imagebackground}
+    >
+      <View style={styles.overlay}>
+        <View style={styles.container}>
+          <Text style={styles.title}>Tree Data Collection</Text>
+          
+          {!user ? (
+            // Show these buttons when user is not logged in
+            <>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => navigation.navigate("LoginScreen")}
+              >
+                <Text style={styles.buttonText}>Login</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => navigation.navigate("SignupScreen")}
+              >
+                <Text style={styles.buttonText}>Sign Up</Text>
+              </TouchableOpacity>
+            </>
+          ) : (
+            // Show these buttons when user is logged in
+            <>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => navigation.navigate("TreeDataForm")}
+              >
+                <Text style={styles.buttonText}>Add Tree Data</Text>
+              </TouchableOpacity>
+              
+              {isAdmin && (
+                <TouchableOpacity
+                  style={[styles.button, styles.adminButton]}
+                  onPress={() => navigation.navigate("AdminDashboard")}
+                >
+                  <Text style={styles.buttonText}>View Excel</Text>
+                </TouchableOpacity>
+              )}
+              
+              <TouchableOpacity 
+                style={[styles.button, styles.logoutButton]} 
+                onPress={handleLogout}
+              >
+                <Text style={styles.buttonText}>Logout</Text>
+              </TouchableOpacity>
+            </>
+          )}
+        </View>
+      </View>
+    </ImageBackground>
+  );
 }
 
-export default HomeScreen
-
 const styles = StyleSheet.create({
+  imagebackground: {
+    flex: 1,
+    width: "100%",
+    height: "100%",
+  },
+  overlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
   container: {
     flex: 1,
-    flexDirection: 'column',
-  },
-  image: {
-    width: '100%',
-    heigth: '100%',
-    flex: 1,
-    resizeMode: 'cover',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 20,
+    width: "100%",
   },
   title: {
-    color: 'white',
-    fontSize: 42,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    // backgroundColor: 'rgba(0,0,0,0.5)',
-    marginBottom: 120,
-    marginTop:-50,
-   
-  },
-  link: {
-    color: 'white',
-    fontSize: 42,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    textDecorationLine: 'underline',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    padding: 4,
+    fontSize: 32,
+    fontWeight: "bold",
+    marginBottom: 40,
+    color: "white",
+    textAlign: "center",
   },
   button: {
-    height: 60,
-    width:150,
-    borderRadius: 20,
-    justifyContent: 'center',
-    backgroundColor: 'rgba(0,0,0,0.75)',
-    padding: 6,
-    marginBottom: 50,
-
+    backgroundColor: "#4a7c59",
+    padding: 15,
+    borderRadius: 10,
+    width: "80%",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  adminButton: {
+    backgroundColor: "#2c3e50",
+  },
+  logoutButton: {
+    backgroundColor: "#c0392b",
+    marginTop: 20,
   },
   buttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    padding: 4,
-  }
-})
+    color: "white",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+});

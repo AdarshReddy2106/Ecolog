@@ -5,19 +5,20 @@ import {getFirestore} from "firebase/firestore";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
+
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyDQaxZ5SzIlL7dboeFNt1BV4l8GJRemk-w",
-  authDomain: "appfinal-ec1e1.firebaseapp.com",
-  projectId: "appfinal-ec1e1",
-  storageBucket: "appfinal-ec1e1.firebasestorage.app",
-  messagingSenderId: "647985723330",
-  appId: "1:647985723330:web:cdbee7ac01c53b8ade885b"
+  apiKey: "AIzaSyD4KJ7HA5SKO2wy7FDJMlaPBo4ExUe8kGQ",
+  authDomain: "copy-b1ab7.firebaseapp.com",
+  projectId: "copy-b1ab7",
+  storageBucket: "copy-b1ab7.firebasestorage.app",
+  messagingSenderId: "154588596563",
+  appId: "1:154588596563:web:839bbdfba02a23f627b9a6"
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-export const auth=getAuth();
+export const auth=getAuth(app);
 export const db=getFirestore(app);
 export default app;

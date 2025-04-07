@@ -5,7 +5,7 @@ import { auth } from './firebaseConfig';
 import { signInWithEmailAndPassword } from "firebase/auth";
 import MyButton from "./MyButton";
 import MyTextinput from "./MyTextInput";
-import SocialMedia from "./SocialMedia";
+
 
 
 const LoginScreen = () => {
@@ -15,8 +15,15 @@ const LoginScreen = () => {
 
     const handleLogin = async() => {
         try{
-            await signInWithEmailAndPassword(auth, email, password);
-            navigation.navigate('TreeDataForm');
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+            
+            // Check if user is admin
+            if (["admin@example.com", "a@gmail.com"].includes(user.email)) {
+                navigation.navigate('View Excel');
+            } else {
+                navigation.navigate('TreeDataForm');
+            }
         } catch(error) { 
             Alert.alert('Error', error?.message || "An unknown error occurred.")
         }

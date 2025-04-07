@@ -49,11 +49,12 @@ const SignUpScreen = () => {
         } catch (error) {
             if (error.code === "auth/email-already-in-use") {
                 setMessage("Email is already in use, please login to continue.");
+                setTimeout(() => {navigation.navigate("LoginScreen")}, 3000);
                 
             } else {
                 setMessage(error.message);
             }
-            setTimeout(() => {navigation.navigate("LoginScreen")}, 3000);
+            
         }
 
     };
