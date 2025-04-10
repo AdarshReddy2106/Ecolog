@@ -66,7 +66,8 @@ export const TreeDataProvider = ({ children }) => {
     treeId: '',
     height: '',
     numBranches: 0,
-    branchDiameters: []
+    branchDiameters: [],
+    mainBranchDiameter: ''
   });
 
   const updateTreeData = (newData) => {
@@ -81,7 +82,8 @@ export const TreeDataProvider = ({ children }) => {
       treeId: '',
       height: '',
       numBranches: 0,
-      branchDiameters: []
+      branchDiameters: [],
+      mainBranchDiameter: ''
     });
   };
 

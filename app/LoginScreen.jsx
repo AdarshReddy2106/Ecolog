@@ -38,7 +38,7 @@ const LoginScreen = () => {
     return (
         <View style={styles.container}>
             <ImageBackground source={require("../assets/images/blackwp.png")} style={styles.imagebackground}>
-                <Text style={styles.title}>App Name</Text>
+                <Text style={styles.title}>Tree IQ</Text>
                 <View style={styles.inputContainer}>
                     <MyTextinput placeholder="Enter E-mail or User Name" value={email} onChangeText={setEmail} />
                     <MyTextinput placeholder="Password" secureTextEntry value={password} onChangeText={setPassword} />

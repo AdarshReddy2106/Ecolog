@@ -11,66 +11,60 @@ import SignUpScreen from './SignUpScreen';
 import TreeDataForm from './TreeDataForm';
 import BranchDetailsForm from './BranchDetailsForm';
 import UploadScreen from './UploadScreen';
-import AdminDashboard from './AdminDashboard';
-import TreeDataListScreen from './TreeDataListScreen';
 import ViewExcel from './ViewExcel';
 import Admin from './Admin';
+import TreeDataListScreen from './TreeDataListScreen';
+
 const Stack = createNativeStackNavigator();
 
 function MainNavigator() {
   return (
-    
     <Stack.Navigator initialRouteName="Home">
       <Stack.Screen 
-                name="Home" 
-                component={HomeScreen} 
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen 
-                name="LoginScreen" 
-                component={LoginScreen} 
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen 
-                name="SignUpScreen" 
-                component={SignUpScreen} 
-                options={{ headerShown: false }}
-              />
-              
-              <Stack.Screen 
-                name="TreeDataForm" 
-                component={TreeDataForm} 
-                options={{ title: 'Tree Data Entry' }}
-              />
-              <Stack.Screen 
-                name="BranchDetailsForm" 
-                component={BranchDetailsForm} 
-                options={{ title: 'Branch Details' }}
-              />
-              <Stack.Screen 
-                name="UploadScreen" 
-                component={UploadScreen} 
-                options={{ title: 'Upload Data' }}
-              />
-              <Stack.Screen 
-                name="TreeDataList" 
-                component={TreeDataListScreen} 
-                options={{ title: 'Saved Trees' }}
-              />
-              <Stack.Screen 
-                name="ViewExcel" 
-                component={ViewExcel}
-              />
-              <Stack.Screen 
-                  name="Admin" 
-                  component={Admin} 
-                  options={{ title: "Admin" }}
-              />
-              <Stack.Screen 
-                name="AdminDashboard" 
-                component={AdminDashboard} 
-                options={{ title: 'Admin Dashboard' }}
-              />
+        name="Home" 
+        component={HomeScreen} 
+        options={{headerShown: false }}
+      />
+      <Stack.Screen 
+        name="LoginScreen" 
+        component={LoginScreen} 
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen 
+        name="SignUpScreen" 
+        component={SignUpScreen} 
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen 
+        name="TreeDataForm" 
+        component={TreeDataForm} 
+        options={{ title: 'Tree Data Entry', headerShown: false}}
+      />
+      <Stack.Screen 
+        name="BranchDetailsForm" 
+        component={BranchDetailsForm} 
+        options={{ title: 'Branch Details', headerShown: false}}
+      />
+      <Stack.Screen 
+        name="UploadScreen" 
+        component={UploadScreen} 
+        options={{ title: 'Upload Data', headerShown: false }}
+      />
+      <Stack.Screen 
+        name="TreeDataList" 
+        component={TreeDataListScreen} 
+        options={{ title: 'Saved Trees' }}
+      />
+      <Stack.Screen
+        name="ViewExcel"
+        component={ViewExcel}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen 
+        name="Admin" 
+        component={Admin} 
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   );
 }
@@ -78,9 +72,7 @@ function MainNavigator() {
 export default function App() {
   return (
     <TreeDataProvider>
-      
-        <MainNavigator />
-      
+      <MainNavigator />
     </TreeDataProvider>
   );
 }
