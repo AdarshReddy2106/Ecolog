@@ -36,13 +36,14 @@ export default function HomeScreen() {
   };
 
   return (
-    <ImageBackground
-      source={require("../assets/images/blackwp.png")}
+    <View style={styles.container}>
+      <ImageBackground
+      source={require("../assets/images/forest.png")}
+      resizeMode="cover"
       style={styles.imagebackground}
     >
-      <View style={styles.overlay}>
-        <View style={styles.container}>
-          <Text style={styles.title}>Tree Data Collection</Text>
+        
+          <Text style={styles.title}>Tree IQ</Text>
           
           {!user ? (
             // Show these buttons when user is not logged in
@@ -56,7 +57,7 @@ export default function HomeScreen() {
               
               <TouchableOpacity
                 style={styles.button}
-                onPress={() => navigation.navigate("SignupScreen")}
+                onPress={() => navigation.navigate("SignUpScreen")}
               >
                 <Text style={styles.buttonText}>Sign Up</Text>
               </TouchableOpacity>
@@ -88,9 +89,8 @@ export default function HomeScreen() {
               </TouchableOpacity>
             </>
           )}
+        </ImageBackground>
         </View>
-      </View>
-    </ImageBackground>
   );
 }
 
@@ -98,38 +98,37 @@ const styles = StyleSheet.create({
   imagebackground: {
     flex: 1,
     width: "100%",
-    height: "100%",
-  },
-  overlay: {
-    flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    justifyContent: "center",
-    alignItems: "center",
+    height: "120%",
+    paddingBottom: 100,
+    resizeMode: 'cover',
+    justifyContent: 'center'
+
   },
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 20,
-    width: "100%",
+    flexDirection:'column',
   },
   title: {
-    fontSize: 32,
+    fontSize: 42,
     fontWeight: "bold",
-    marginBottom: 40,
+    marginBottom: 80,
+    marginTop:40,
     color: "white",
     textAlign: "center",
   },
   button: {
-    backgroundColor: "#4a7c59",
-    padding: 15,
-    borderRadius: 10,
-    width: "80%",
-    alignItems: "center",
-    marginBottom: 20,
+    height: 60,
+    width:150,
+    borderRadius: 20,
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0,0,0,1.5)',
+    padding: 6,
+    marginLeft:100,
+    marginBottom: 50,
+
   },
   adminButton: {
-    backgroundColor: "#2c3e50",
+    backgroundColor: 'rgba(0,0,0,1.5)',
   },
   logoutButton: {
     backgroundColor: "#c0392b",
@@ -139,5 +138,7 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 18,
     fontWeight: "bold",
+    textAlign:'center',
+    padding: 4,
   },
 });
