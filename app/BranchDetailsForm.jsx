@@ -5,8 +5,8 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 const Container = styled.View`
-  
   flex: 1;
+  min-height: 100%;
   background-color: #d8e8d2;
   align-items: center;
   justify-content: center;
@@ -14,8 +14,7 @@ const Container = styled.View`
 
 
 const Card = styled.View`
-  marginTop: 150px;
-  marginLeft: 15px;
+  marginLeft: 5px;
   width: 90%;
   background-color: #f5f5dc;
   padding: 20px;
@@ -62,7 +61,7 @@ export default function BranchDetailsForm() {
   const [diameters, setDiameters] = useState(Array(branches).fill(''));
 
   const handleNext = () => {
-    if (!treeId || !height || !branches ) {
+    if (!treeId || !height || !branches) {
       Alert.alert("Error", "Please enter all required details before proceeding.");
       return;
     }
@@ -72,6 +71,7 @@ export default function BranchDetailsForm() {
       height,
       branches,
       branchDiameters: diameters,
+      mainBranchDiameter: route.params.mainBranchDiameter,
     });
   
     navigation.navigate("UploadScreen", {
@@ -79,13 +79,14 @@ export default function BranchDetailsForm() {
       height,
       branches,
       branchDiameters: diameters,
+      mainBranchDiameter: route.params.mainBranchDiameter,
     });
   };
   return (
-    <ScrollView>
+    <ScrollView contentContainerStyle={{flexGrow: 1}}>
       <Container>
-      
-        <Card>
+      <View style={{ flex:1, justifyContent: 'center', alignItems: 'center', width: '100%'}}>
+        <Card style={{marginLeft: '1'}}>
           <View style={{ alignItems: 'center', marginBottom: 10 }}>
             <Image source={require('../assets/images/tree-icon.png')} style={{ width: 80, height: 80 }} />
           </View>
@@ -104,7 +105,7 @@ export default function BranchDetailsForm() {
             <ButtonText>Next</ButtonText>
           </Button>
         </Card>
-      
+      </View>
       </Container>
     </ScrollView>
   );

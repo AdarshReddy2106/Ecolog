@@ -181,10 +181,11 @@ export async function saveTreeData(treeData, imageUri) {
     const { data, error } = await supabase
       .from('Tree Data')
       .insert({
-        "Tree Id": treeData.treeId,  // Using quoted column names in case they contain spaces
+        "Tree Id": treeData.treeId,
         "Tree Height": parseFloat(treeData.height),
         "Number of Primary Stems": parseInt(treeData.numBranches, 10),
         "Primary Stem Diameters": treeData.branchDiameters,
+        "Main Stem Diameter": parseFloat(treeData.mainBranchDiameter),
         "Image URL": imageUrl,
         "User ID": firebaseUid,
         "created_at": new Date().toISOString()

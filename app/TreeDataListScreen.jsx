@@ -36,6 +36,7 @@ export default function TreeDataListScreen() {
         <Text style={styles.treeId}>Tree ID: {item.tree_id}</Text>
         <Text style={styles.treeDetail}>Height: {item.height} cm</Text>
         <Text style={styles.treeDetail}>Primary Stems: {item.num_primary_stems}</Text>
+        <Text style={styles.treeDetail}>Main Branch Diameter: {item.main_branch_diameter} cm</Text>
         <Text style={styles.treeDetail}>
           Stem Diameters: {item.primary_stem_diameters.join(', ')}
         </Text>
