@@ -33,12 +33,16 @@ export default function TreeDataListScreen() {
   const renderTreeItem = ({ item }) => (
     <View style={styles.treeCard}>
       <View style={styles.treeInfo}>
+        <Text style={styles.studentInfo}>
+          Student: {item.student_name} ({item.student_roll_no})
+        </Text>
+        <Text style={styles.studentInfo}>Group: {item.student_group}</Text>
         <Text style={styles.treeId}>Tree ID: {item.tree_id}</Text>
         <Text style={styles.treeDetail}>Height: {item.height} cm</Text>
         <Text style={styles.treeDetail}>Primary Stems: {item.num_primary_stems}</Text>
-        <Text style={styles.treeDetail}>Main Branch Diameter: {item.main_branch_diameter} cm</Text>
+        <Text style={styles.treeDetail}>Main Stem Diameter: {item.main_branch_diameter} cm</Text>
         <Text style={styles.treeDetail}>
-          Stem Diameters: {item.primary_stem_diameters.join(', ')}
+          Primary Stem Diameters: {item.primary_stem_diameters.join(', ')}
         </Text>
       </View>
       {item.image_url && (
@@ -149,5 +153,11 @@ const styles = StyleSheet.create({
     color: '#666',
     fontSize: 16,
     marginTop: 50,
+  },
+  studentInfo: {
+    fontSize: 16,
+    color: '#4a7c59',
+    marginBottom: 4,
+    fontWeight: '500',
   },
 });

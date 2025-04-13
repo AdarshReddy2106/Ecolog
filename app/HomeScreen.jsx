@@ -9,22 +9,17 @@ import forestImg from "@/assets/images/forest.png"
 import { useNavigation } from "@react-navigation/native";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebaseConfig";
+import { useAuth } from "./AuthContext";
 
 export default function HomeScreen() {
   const navigation = useNavigation();
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [user, setUser] = useState(null);
+  const { user, isAdmin } = useAuth();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-      if (user) {
-        setIsAdmin(["admin@example.com", "a@gmail.com"].includes(user.email));
-      }
-    });
-
-    return () => unsubscribe();
-  }, []);
+    if (user) {
+      navigation.navigate('StudentDetails');
+    }
+  }, [user]);
 
   const handleLogout = async () => {
     try {
@@ -75,7 +70,7 @@ export default function HomeScreen() {
               {isAdmin && (
                 <TouchableOpacity
                   style={[styles.button, styles.adminButton]}
-                  onPress={() => navigation.navigate("AdminDashboard")}
+                  onPress={() => navigation.navigate("ViewExcel")}
                 >
                   <Text style={styles.buttonText}>View Excel</Text>
                 </TouchableOpacity>

@@ -27,7 +27,7 @@ const LoginScreen = () => {
                 // Navigate to TreeDataForm for regular users
                 navigation.reset({
                     index: 0,
-                    routes: [{ name: 'TreeDataForm' }],
+                    routes: [{ name: 'StudentDetails' }],
                 });
             }
         } catch(error) { 

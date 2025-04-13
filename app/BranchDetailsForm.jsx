@@ -56,7 +56,15 @@ const ButtonText = styled.Text`
 export default function BranchDetailsForm() {
   const navigation = useNavigation();
   const route = useRoute();
-  const { treeId, height, branches } = route.params;
+  const { 
+    treeId, 
+    height, 
+    branches, 
+    mainBranchDiameter,
+    studentName,
+    studentRollNo,
+    studentGroup 
+  } = route.params;
   
   const [diameters, setDiameters] = useState(Array(branches).fill(''));
 
@@ -65,22 +73,45 @@ export default function BranchDetailsForm() {
       Alert.alert("Error", "Please enter all required details before proceeding.");
       return;
     }
-  
-    console.log("Navigating to UploadScreen with:", {
-      treeId,
-      height,
-      branches,
-      branchDiameters: diameters,
-      mainBranchDiameter: route.params.mainBranchDiameter,
+
+    // Validate that all diameters are numbers and not empty
+    const validDiameters = diameters.map((d, index) => {
+      if (!d || d.trim() === '') {
+        Alert.alert("Error", `Please enter a diameter for branch ${index + 1}`);
+        return null;
+      }
+      const num = parseFloat(d);
+      if (isNaN(num)) {
+        Alert.alert("Error", `Please enter a valid number for branch ${index + 1} diameter`);
+        return null;
+      }
+      return num;
     });
+
+    if (validDiameters.includes(null)) {
+      return;
+    }
   
     navigation.navigate("UploadScreen", {
       treeId,
       height,
       branches,
-      branchDiameters: diameters,
-      mainBranchDiameter: route.params.mainBranchDiameter,
+      branchDiameters: validDiameters,
+      mainBranchDiameter,
+      studentName,
+      studentRollNo,
+      studentGroup
     });
+
+    // console.log("Saving data in bd form:", {
+    //   treeId,
+    //   height,
+    //   branches,
+    //   branchDiameters: route.params.branchDiameters,
+    //   studentName: route.params.studentName,
+    //   studentRollNo: route.params.studentRollNo,
+    //   studentGroup: route.params.studentGroup,
+    //   }); 
   };
   return (
     <ScrollView contentContainerStyle={{flexGrow: 1}}>

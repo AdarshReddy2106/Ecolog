@@ -181,14 +181,18 @@ export async function saveTreeData(treeData, imageUri) {
     const { data, error } = await supabase
       .from('Tree Data')
       .insert({
-        "Tree Id": treeData.treeId,
-        "Tree Height": parseFloat(treeData.height),
-        "Number of Primary Stems": parseInt(treeData.numBranches, 10),
-        "Primary Stem Diameters": treeData.branchDiameters,
-        "Main Stem Diameter": parseFloat(treeData.mainBranchDiameter),
-        "Image URL": imageUrl,
-        "User ID": firebaseUid,
-        "created_at": new Date().toISOString()
+        "Tree_Id": treeData.treeId,
+        "Tree_Height": parseFloat(treeData.height),
+        "Number_of_Primary_Stems": parseInt(treeData.numBranches, 10),
+        "Primary_Stem_Diameters": treeData.branchDiameters,
+        "Main_Branch_Diameter": parseFloat(treeData.mainBranchDiameter),
+        "Student_Name": treeData.studentName || '',
+        "Student_Roll_No": treeData.studentRollNo || '',
+        "Student_Group": treeData.studentGroup || '',
+        "User_Email": treeData.userEmail || '',
+        "Image_URL": imageUrl,
+        "User_ID": firebaseUid,
+        "Created_At": new Date().toISOString()
       });
     
     if (error) {

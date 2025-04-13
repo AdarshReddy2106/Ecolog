@@ -50,8 +50,9 @@ const ButtonText = styled.Text`
   font-weight: bold;
 `;
 
-export default function TreeDataForm() {
+export default function TreeDataForm({ route }) {
   const navigation = useNavigation();
+  const context = useTreeData();
   
   // Initialize with default values first
   const [treeId, setTreeId] = useState('');
@@ -59,8 +60,8 @@ export default function TreeDataForm() {
   const [numBranches, setNumBranches] = useState('');
   const [mainBranchDiameter, setMainBranchDiameter] = useState('');
   
-  // Get context values
-  const context = useTreeData();
+  // Get student details from context
+  const { studentName, studentRollNo, studentGroup } = context.treeData;
   
   // Update useEffect to include mainBranchDiameter
   useEffect(() => {
@@ -73,6 +74,7 @@ export default function TreeDataForm() {
   }, [context]);
 
   const handleNext = () => {
+    // Include student details when saving or passing to next screen
     if (!treeId || !numBranches) {
       Alert.alert('Error', 'All fields are required!');
       return;
@@ -80,13 +82,15 @@ export default function TreeDataForm() {
 
     const branches = parseInt(numBranches, 10);
     
-    // Update context with current form values
     if (context && context.updateTreeData) {
       context.updateTreeData({
         treeId,
         height,
         numBranches: branches,
-        mainBranchDiameter
+        mainBranchDiameter,
+        studentName,
+        studentRollNo,
+        studentGroup
       });
     }
 
@@ -95,7 +99,10 @@ export default function TreeDataForm() {
         treeId, 
         height, 
         branches,
-        mainBranchDiameter 
+        mainBranchDiameter,
+        studentName,
+        studentRollNo,
+        studentGroup
       });
     } else {
       Alert.alert('Error', 'Number of branches should be at least 1');

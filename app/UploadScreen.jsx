@@ -5,6 +5,8 @@ import styled from "styled-components/native";
 import { saveTreeData } from "./services/treeService";
 import { useRoute } from "@react-navigation/native";
 import { useNavigation } from '@react-navigation/native';
+import { useTreeData } from './TreeDataContext';
+import { auth } from './firebaseConfig';
 
 const Container = styled.View`
   flex: 1;
@@ -58,13 +60,18 @@ export default function UploadScreen() {
   const [loading, setLoading] = useState(false);
   const route = useRoute();
   const navigation = useNavigation();
+  const context = useTreeData();
   // Add default empty object for route.params to prevent the TypeError
   // Safely destructure with optional chaining
   const { 
     treeId, 
     height, 
     branches, 
-    branchDiameters 
+    branchDiameters,
+    mainBranchDiameter,
+    studentName,
+    studentRollNo,
+    studentGroup 
   } = route.params || {};
   //console.log("Tree Data:", treeData);
   // Function to pick an image from gallery
@@ -116,35 +123,73 @@ export default function UploadScreen() {
   const handleSave = async () => {
     if (!image) {
       Alert.alert("Error", "Please upload an image before saving.");
-      navigation.navigate("TreeDataForm");
       return;
     }
 
     try {
       setLoading(true);
-      console.log("Saving data:", {
-        treeId,
-        height,
-        branches,
-        branchDiameters: route.params.branchDiameters,
-        mainBranchDiameter: route.params.mainBranchDiameter,
-      }); 
-      
+
+      // Validate numeric fields
+      if (!height || isNaN(parseFloat(height))) {
+        Alert.alert("Error", "Please enter a valid height");
+        setLoading(false);
+        return;
+      }
+
+      if (!mainBranchDiameter || isNaN(parseFloat(mainBranchDiameter))) {
+        Alert.alert("Error", "Please enter a valid main branch diameter");
+        setLoading(false);
+        return;
+      }
+
+      // Validate branch diameters
+      if (!branchDiameters || !Array.isArray(branchDiameters) || branchDiameters.length === 0) {
+        Alert.alert("Error", "Please enter valid branch diameters");
+        setLoading(false);
+        return;
+      }
+
+      // Validate each branch diameter
+      for (let i = 0; i < branchDiameters.length; i++) {
+        if (isNaN(parseFloat(branchDiameters[i]))) {
+          Alert.alert("Error", `Please enter a valid diameter for branch ${i + 1}`);
+          setLoading(false);
+          return;
+        }
+      }
+
       const treeData = {
-        treeId,
-        height,
-        numBranches: branches,
-        branchDiameters,
-        mainBranchDiameter: route.params.mainBranchDiameter,
+        treeId: treeId || '',
+        height: parseFloat(height),
+        numBranches: parseInt(branches, 10),
+        branchDiameters: branchDiameters.map(d => parseFloat(d)),
+        mainBranchDiameter: parseFloat(mainBranchDiameter),
+        // Include student details from context
+        studentName: context.treeData.studentName || '',
+        studentRollNo: context.treeData.studentRollNo || '',
+        studentGroup: context.treeData.studentGroup || '',
+        // Include user email from auth
+        userEmail: auth.currentUser?.email || ''
       };
-      
-      // Save data to Supabase
+
+      console.log("Saving data:", treeData);
       await saveTreeData(treeData, image);
+      
+      // Reset the TreeDataContext
+      if (context && context.resetTreeData) {
+        context.resetTreeData();
+      }
       
       Alert.alert(
         "Success", 
         "Tree data has been saved!",
-        [{ text: "OK", onPress: () => navigation.navigate("TreeDataForm") }]
+        [{ 
+          text: "OK", 
+          onPress: () => navigation.reset({
+            index: 0,
+            routes: [{ name: 'TreeDataForm' }],
+          })
+        }]
       );
     } catch (error) {
       Alert.alert("Error", error.message || "Failed to save data");
