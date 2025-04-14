@@ -49,27 +49,16 @@
 import React, { createContext, useContext, useState } from 'react';
 
 // Create context with default value
-const TreeDataContext = createContext({
-  treeData: {
-    treeId: '',
-    height: '',
-    numBranches: 0,
-    branchDiameters: []
-  },
-  updateTreeData: () => {},
-  resetTreeData: () => {}
-});
+const TreeDataContext = createContext();
 
 // Provider component
-export function TreeDataProvider({ children }) {
+export const TreeDataProvider = ({ children }) => {
   const [treeData, setTreeData] = useState({
     treeId: '',
-    height: '',
-    numBranches: '',
-    mainBranchDiameter: '',
-    studentName: '',
-    studentRollNo: '',
-    studentGroup: ''
+    height: 0,
+    numBranches: 0,
+    mainBranchDiameter: 0,
+    branchDiameters: []
   });
 
   const updateTreeData = (newData) => {
@@ -80,16 +69,12 @@ export function TreeDataProvider({ children }) {
   };
 
   const resetTreeData = () => {
-    // Preserve student details when resetting
-    const { studentName, studentRollNo, studentGroup } = treeData;
     setTreeData({
       treeId: '',
-      height: '',
-      numBranches: '',
-      mainBranchDiameter: '',
-      studentName,
-      studentRollNo,
-      studentGroup
+      height: 0,
+      numBranches: 0,
+      mainBranchDiameter: 0,
+      branchDiameters: []
     });
   };
 
@@ -98,13 +83,15 @@ export function TreeDataProvider({ children }) {
       {children}
     </TreeDataContext.Provider>
   );
-}
+};
 
-// Custom hook
-export function useTreeData() {
+// Custom hook to use the context
+export const useTreeData = () => {
   const context = useContext(TreeDataContext);
   if (!context) {
     throw new Error('useTreeData must be used within a TreeDataProvider');
   }
   return context;
-}
+};
+
+export default TreeDataProvider;

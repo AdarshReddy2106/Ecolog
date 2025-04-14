@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { auth } from './firebaseConfig'; // Ensure this path is correct
+import { auth } from './firebaseConfig';
 
 const AuthContext = createContext();
 
@@ -31,3 +31,5 @@ export const AuthProvider = ({ children }) => {
 export const useAuth = () => {
   return useContext(AuthContext);
 };
+
+export default AuthProvider;

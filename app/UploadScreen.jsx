@@ -121,62 +121,60 @@ export default function UploadScreen() {
 
   // Function to handle saving data
   const handleSave = async () => {
-    if (!image) {
-      Alert.alert("Error", "Please upload an image before saving.");
-      return;
-    }
-
     try {
       setLoading(true);
+      
+      if (!image) {
+        Alert.alert("Error", "Please upload an image before saving.");
+        return;
+      }
+
+      // Get current user
+      const currentUser = auth.currentUser;
+      if (!currentUser) {
+        Alert.alert("Error", "Please log in to save data");
+        return;
+      }
 
       // Validate numeric fields
-      if (!height || isNaN(parseFloat(height))) {
-        Alert.alert("Error", "Please enter a valid height");
-        setLoading(false);
+      const heightNum = parseFloat(route.params.height);
+      const branchesNum = parseInt(route.params.branches, 10);
+      const mainBranchDiameterNum = parseFloat(route.params.mainBranchDiameter);
+      const branchDiametersNum = route.params.branchDiameters.map(d => parseFloat(d));
+
+      // Validate all numeric values
+      if (isNaN(heightNum) || heightNum <= 0) {
+        Alert.alert("Error", "Invalid tree height");
+        return;
+      }
+      if (isNaN(branchesNum) || branchesNum <= 0) {
+        Alert.alert("Error", "Invalid number of branches");
+        return;
+      }
+      if (isNaN(mainBranchDiameterNum) || mainBranchDiameterNum <= 0) {
+        Alert.alert("Error", "Invalid main branch diameter");
+        return;
+      }
+      if (branchDiametersNum.some(d => isNaN(d) || d <= 0)) {
+        Alert.alert("Error", "Invalid branch diameters");
         return;
       }
 
-      if (!mainBranchDiameter || isNaN(parseFloat(mainBranchDiameter))) {
-        Alert.alert("Error", "Please enter a valid main branch diameter");
-        setLoading(false);
-        return;
-      }
-
-      // Validate branch diameters
-      if (!branchDiameters || !Array.isArray(branchDiameters) || branchDiameters.length === 0) {
-        Alert.alert("Error", "Please enter valid branch diameters");
-        setLoading(false);
-        return;
-      }
-
-      // Validate each branch diameter
-      for (let i = 0; i < branchDiameters.length; i++) {
-        if (isNaN(parseFloat(branchDiameters[i]))) {
-          Alert.alert("Error", `Please enter a valid diameter for branch ${i + 1}`);
-          setLoading(false);
-          return;
-        }
-      }
-
-      const treeData = {
-        treeId: treeId || '',
-        height: parseFloat(height),
-        numBranches: parseInt(branches, 10),
-        branchDiameters: branchDiameters.map(d => parseFloat(d)),
-        mainBranchDiameter: parseFloat(mainBranchDiameter),
-        // Include student details from context
-        studentName: context.treeData.studentName || '',
-        studentRollNo: context.treeData.studentRollNo || '',
-        studentGroup: context.treeData.studentGroup || '',
-        // Include user email from auth
-        userEmail: auth.currentUser?.email || ''
+      const dataToSave = {
+        treeId: route.params.treeId,
+        height: heightNum,
+        numBranches: branchesNum,
+        branchDiameters: branchDiametersNum,
+        mainBranchDiameter: mainBranchDiameterNum,
+        studentName: currentUser.displayName || currentUser.email,
+        studentRollNo: route.params.studentRollNo || '0',
+        studentGroup: route.params.studentGroup || 'default',
+        userEmail: currentUser.email
       };
 
-      console.log("Saving data:", treeData);
-      await saveTreeData(treeData, image);
+      await saveTreeData(dataToSave, image);
       
-      // Reset the TreeDataContext
-      if (context && context.resetTreeData) {
+      if (context?.resetTreeData) {
         context.resetTreeData();
       }
       

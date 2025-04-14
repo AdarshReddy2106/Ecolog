@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { View, Image, Alert } from 'react-native';
+import { View, Image, Alert, ImageBackground, StyleSheet, SafeAreaView } from 'react-native';
 import styled from 'styled-components/native';
 import { useNavigation } from '@react-navigation/native';
-import { AntDesign, MaterialIcons, Octicons } from '@expo/vector-icons';
+import { AntDesign, MaterialIcons, Octicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTreeData } from './TreeDataContext';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons as MaterialCommunityIconsExpo } from '@expo/vector-icons';
+import Header from './components/Header';
+import { useAuth } from './AuthContext';
 
 const Container = styled.View`
   flex: 1;
-  background-color: #d8e8d2;
+  padding-top: 20px;
   align-items: center;
   justify-content: center;
+  background-color: #d8e8d2;
 `;
 
 const Card = styled.View`
@@ -19,6 +22,7 @@ const Card = styled.View`
   padding: 20px;
   border-radius: 15px;
   elevation: 5;
+  margin-top: 20px;
 `;
 
 const IconInput = styled.View`
@@ -50,111 +54,187 @@ const ButtonText = styled.Text`
   font-weight: bold;
 `;
 
-export default function TreeDataForm({ route }) {
+const TreeDataForm = () => {
   const navigation = useNavigation();
-  const context = useTreeData();
+  const { treeData, updateTreeData } = useTreeData();
+  const { loading } = useAuth();
   
-  // Initialize with default values first
   const [treeId, setTreeId] = useState('');
   const [height, setHeight] = useState('');
   const [numBranches, setNumBranches] = useState('');
   const [mainBranchDiameter, setMainBranchDiameter] = useState('');
-  
-  // Get student details from context
-  const { studentName, studentRollNo, studentGroup } = context.treeData;
-  
-  // Update useEffect to include mainBranchDiameter
+
   useEffect(() => {
-    if (context && context.treeData) {
-      setTreeId(context.treeData.treeId || '');
-      setHeight(context.treeData.height || '');
-      setNumBranches(context.treeData.numBranches ? context.treeData.numBranches.toString() : '');
-      setMainBranchDiameter(context.treeData.mainBranchDiameter || '');
+    // Initialize form with context values
+    if (treeData) {
+      setTreeId(treeData.treeId || '');
+      setHeight(treeData.height ? treeData.height.toString() : '');
+      setNumBranches(treeData.numBranches ? treeData.numBranches.toString() : '');
+      setMainBranchDiameter(treeData.mainBranchDiameter ? treeData.mainBranchDiameter.toString() : '');
     }
-  }, [context]);
+  }, [treeData]);
+
+  if (loading) {
+    return null; // or a loading spinner
+  }
+
+  console.log('Current treeData:', treeData); // Add this for debugging
 
   const handleNext = () => {
-    // Include student details when saving or passing to next screen
-    if (!treeId || !numBranches) {
+    // Validate inputs
+    if (!treeId || !height || !numBranches || !mainBranchDiameter) {
       Alert.alert('Error', 'All fields are required!');
       return;
     }
 
-    const branches = parseInt(numBranches, 10);
-    
-    if (context && context.updateTreeData) {
-      context.updateTreeData({
-        treeId,
-        height,
-        numBranches: branches,
-        mainBranchDiameter,
-        studentName,
-        studentRollNo,
-        studentGroup
-      });
+    // Get student details from context
+    const { studentName, studentRollNo, studentGroup } = treeData;
+
+    // Convert to numbers and validate
+    const heightNum = parseFloat(height);
+    const branchesNum = parseInt(numBranches, 10);
+    const mainDiameterNum = parseFloat(mainBranchDiameter);
+
+    if (isNaN(heightNum) || heightNum <= 0) {
+      Alert.alert('Error', 'Please enter a valid height (must be greater than 0)');
+      return;
     }
 
-    if (branches >= 1) {
-      navigation.navigate('BranchDetailsForm', { 
-        treeId, 
-        height, 
-        branches,
-        mainBranchDiameter,
-        studentName,
-        studentRollNo,
-        studentGroup
-      });
-    } else {
-      Alert.alert('Error', 'Number of branches should be at least 1');
+    if (isNaN(branchesNum) || branchesNum < 1) {
+      Alert.alert('Error', 'Please enter a valid number of branches (must be at least 1)');
+      return;
     }
+
+    if (isNaN(mainDiameterNum) || mainDiameterNum <= 0) {
+      Alert.alert('Error', 'Please enter a valid main branch diameter (must be greater than 0)');
+      return;
+    }
+
+    // Update context with validated numeric values
+    updateTreeData({
+      treeId,
+      height: heightNum,
+      numBranches: branchesNum,
+      mainBranchDiameter: mainDiameterNum,
+      studentName,
+      studentRollNo,
+      studentGroup
+    });
+
+    navigation.navigate('BranchDetailsForm', {
+      treeId,
+      height: heightNum,
+      branches: branchesNum,
+      mainBranchDiameter: mainDiameterNum,
+      studentName,
+      studentRollNo,
+      studentGroup
+    });
   };
 
   return (
-    <Container>
-      <Card>
-        <View style={{ alignItems: 'center', marginBottom: 10 }}>
-          <Image source={require('../assets/images/tree-icon.png')} style={{ width: 80, height: 80 }} />
-        </View>
+    <SafeAreaView style={styles.safeArea}>
+      <ImageBackground
+        source={require("../assets/images/blackwp.png")}
+        style={styles.backgroundImage}
+        resizeMode="cover"
+      >
+        <Header />
+        <Container>
+          <Card>
+            <View style={styles.iconContainer}>
+              <Image 
+                source={require('../assets/images/tree-icon.png')} 
+                style={styles.treeIcon}
+                resizeMode="contain"
+              />
+            </View>
+            
+            <IconInput>
+              <AntDesign name="idcard" size={24} color="black" />
+              <InputField
+                placeholder="Tree ID"
+                value={treeId}
+                onChangeText={setTreeId}
+              />
+            </IconInput>
 
-        <IconInput>
-          <AntDesign name="idcard" size={20} color="#4a7c59" />
-          <InputField placeholder=" Tree ID" value={treeId} onChangeText={setTreeId} />
-        </IconInput>
+            <IconInput>
+              <MaterialIcons name="height" size={24} color="black" />
+              <InputField
+                placeholder="Tree Height (in meters)"
+                value={height}
+                onChangeText={(text) => {
+                  // Only allow valid numeric input
+                  const numericValue = text.replace(/[^0-9.]/g, '');
+                  if (numericValue === '' || !isNaN(parseFloat(numericValue))) {
+                    setHeight(numericValue);
+                  }
+                }}
+                keyboardType="numeric"
+              />
+            </IconInput>
 
-        <IconInput>
-          <Octicons name="number" size={24} color="black" />
-          <InputField 
-            placeholder=" Number of Primary Stems " 
-            value={numBranches} 
-            onChangeText={setNumBranches} 
-            keyboardType="numeric" 
-          />
-        </IconInput>
-        
-        <IconInput>
-          <MaterialIcons name="height" size={24} color="black" />
-          <InputField 
-            placeholder="Height (in cm)" 
-            value={height} 
-            onChangeText={setHeight} 
-            keyboardType="numeric" 
-          />
-        </IconInput>
+            <IconInput>
+              <MaterialCommunityIcons name="diameter" size={24} color="black" />
+              <InputField
+                placeholder="Main Branch Diameter (in cm)"
+                value={mainBranchDiameter}
+                onChangeText={(text) => {
+                  // Only allow valid numeric input
+                  const numericValue = text.replace(/[^0-9.]/g, '');
+                  if (numericValue === '' || !isNaN(parseFloat(numericValue))) {
+                    setMainBranchDiameter(numericValue);
+                  }
+                }}
+                keyboardType="numeric"
+              />
+            </IconInput>
 
-        <IconInput>
-          <MaterialCommunityIcons name="diameter-outline" size={24} color="black" />
-          <InputField 
-            placeholder="Main Branch Diameter (in cm)" 
-            value={mainBranchDiameter} 
-            onChangeText={setMainBranchDiameter} 
-            keyboardType="numeric" 
-          />
-        </IconInput>
+            <IconInput>
+              <Octicons name="number" size={24} color="black" />
+              <InputField
+                placeholder="Number of Primary Stems"
+                value={numBranches}
+                onChangeText={(text) => {
+                  // Only allow positive integers
+                  const intValue = text.replace(/[^0-9]/g, '');
+                  if (intValue === '' || !isNaN(parseInt(intValue))) {
+                    setNumBranches(intValue);
+                  }
+                }}
+                keyboardType="numeric"
+              />
+            </IconInput>
 
-        <Button onPress={handleNext}>
-          <ButtonText>Next</ButtonText>
-        </Button>
-      </Card>
-    </Container>
+            <Button onPress={handleNext}>
+              <ButtonText>Next</ButtonText>
+            </Button>
+          </Card>
+        </Container>
+      </ImageBackground>
+    </SafeAreaView>
   );
-}
+};
+
+const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: 'black',
+  },
+  backgroundImage: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+  },
+  iconContainer: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  treeIcon: {
+    width: 80,
+    height: 80,
+  },
+});
+
+export default TreeDataForm;
