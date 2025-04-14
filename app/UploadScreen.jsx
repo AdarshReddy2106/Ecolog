@@ -5,6 +5,8 @@ import styled from "styled-components/native";
 import { saveTreeData } from "./services/treeService";
 import { useRoute } from "@react-navigation/native";
 import { useNavigation } from '@react-navigation/native';
+import { useTreeData } from './TreeDataContext';
+import { auth } from './firebaseConfig';
 
 const Container = styled.View`
   flex: 1;
@@ -58,13 +60,18 @@ export default function UploadScreen() {
   const [loading, setLoading] = useState(false);
   const route = useRoute();
   const navigation = useNavigation();
+  const context = useTreeData();
   // Add default empty object for route.params to prevent the TypeError
   // Safely destructure with optional chaining
   const { 
     treeId, 
     height, 
     branches, 
-    branchDiameters 
+    branchDiameters,
+    mainBranchDiameter,
+    studentName,
+    studentRollNo,
+    studentGroup 
   } = route.params || {};
   //console.log("Tree Data:", treeData);
   // Function to pick an image from gallery
@@ -114,37 +121,73 @@ export default function UploadScreen() {
 
   // Function to handle saving data
   const handleSave = async () => {
-    if (!image) {
-      Alert.alert("Error", "Please upload an image before saving.");
-      navigation.navigate("TreeDataForm");
-      return;
-    }
-
     try {
       setLoading(true);
-      console.log("Saving data:", {
-        treeId,
-        height,
-        branches,
-        branchDiameters: route.params.branchDiameters,
-        mainBranchDiameter: route.params.mainBranchDiameter,
-      }); 
       
-      const treeData = {
-        treeId,
-        height,
-        numBranches: branches,
-        branchDiameters,
-        mainBranchDiameter: route.params.mainBranchDiameter,
+      if (!image) {
+        Alert.alert("Error", "Please upload an image before saving.");
+        return;
+      }
+
+      // Get current user
+      const currentUser = auth.currentUser;
+      if (!currentUser) {
+        Alert.alert("Error", "Please log in to save data");
+        return;
+      }
+
+      // Validate numeric fields
+      const heightNum = parseFloat(route.params.height);
+      const branchesNum = parseInt(route.params.branches, 10);
+      const mainBranchDiameterNum = parseFloat(route.params.mainBranchDiameter);
+      const branchDiametersNum = route.params.branchDiameters.map(d => parseFloat(d));
+
+      // Validate all numeric values
+      if (isNaN(heightNum) || heightNum <= 0) {
+        Alert.alert("Error", "Invalid tree height");
+        return;
+      }
+      if (isNaN(branchesNum) || branchesNum <= 0) {
+        Alert.alert("Error", "Invalid number of branches");
+        return;
+      }
+      if (isNaN(mainBranchDiameterNum) || mainBranchDiameterNum <= 0) {
+        Alert.alert("Error", "Invalid main branch diameter");
+        return;
+      }
+      if (branchDiametersNum.some(d => isNaN(d) || d <= 0)) {
+        Alert.alert("Error", "Invalid branch diameters");
+        return;
+      }
+
+      const dataToSave = {
+        treeId: route.params.treeId,
+        height: heightNum,
+        numBranches: branchesNum,
+        branchDiameters: branchDiametersNum,
+        mainBranchDiameter: mainBranchDiameterNum,
+        studentName: currentUser.displayName || currentUser.email,
+        studentRollNo: route.params.studentRollNo || '0',
+        studentGroup: route.params.studentGroup || 'default',
+        userEmail: currentUser.email
       };
+
+      await saveTreeData(dataToSave, image);
       
-      // Save data to Supabase
-      await saveTreeData(treeData, image);
+      if (context?.resetTreeData) {
+        context.resetTreeData();
+      }
       
       Alert.alert(
         "Success", 
         "Tree data has been saved!",
-        [{ text: "OK", onPress: () => navigation.navigate("TreeDataForm") }]
+        [{ 
+          text: "OK", 
+          onPress: () => navigation.reset({
+            index: 0,
+            routes: [{ name: 'TreeDataForm' }],
+          })
+        }]
       );
     } catch (error) {
       Alert.alert("Error", error.message || "Failed to save data");
