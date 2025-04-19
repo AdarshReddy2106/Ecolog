@@ -1,12 +1,39 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, Alert } from 'react-native';
-import { useAuth } from './AuthContext';  // Direct import from app directory
+import { useAuth } from './AuthContext';
 import { useNavigation } from '@react-navigation/native';
-import { auth } from './firebaseConfig';  // Direct import from app directory
+import { auth } from './firebaseConfig';
+import { supabase } from './supabaseConfig';
 
 export default function Profile() {
   const { currentUser } = useAuth();
   const navigation = useNavigation();
+  const [studentDetails, setStudentDetails] = useState(null);
+
+  useEffect(() => {
+    fetchStudentDetails();
+  }, []);
+
+  const fetchStudentDetails = async () => {
+    try {
+      if (!currentUser) return;
+
+      const { data, error } = await supabase
+        .from('Tree Data')
+        .select('Student_Name, Student_Roll_No, Student_Group')
+        .eq('User_Email', currentUser.email)
+        .order('Created_At', { ascending: false })
+        .limit(1);
+
+      if (error) throw error;
+
+      if (data && data.length > 0) {
+        setStudentDetails(data[0]);
+      }
+    } catch (error) {
+      console.error('Error fetching student details:', error);
+    }
+  };
 
   const handleLogout = () => {
     Alert.alert(
@@ -23,7 +50,6 @@ export default function Profile() {
           onPress: async () => {
             try {
               await auth.signOut();
-              // Reset the navigation stack to HomeScreen
               navigation.reset({
                 index: 0,
                 routes: [{ name: 'HomeScreen' }],
@@ -47,10 +73,30 @@ export default function Profile() {
       >
         <View style={styles.content}>
           <Text style={styles.title}>Profile</Text>
+          
           <View style={styles.infoContainer}>
             <Text style={styles.label}>Email</Text>
             <Text style={styles.value}>{currentUser?.email}</Text>
           </View>
+
+          {studentDetails && (
+            <>
+              <View style={styles.infoContainer}>
+                <Text style={styles.label}>Student Name</Text>
+                <Text style={styles.value}>{studentDetails.Student_Name}</Text>
+              </View>
+
+              <View style={styles.infoContainer}>
+                <Text style={styles.label}>Roll Number</Text>
+                <Text style={styles.value}>{studentDetails.Student_Roll_No}</Text>
+              </View>
+
+              <View style={styles.infoContainer}>
+                <Text style={styles.label}>Group</Text>
+                <Text style={styles.value}>{studentDetails.Student_Group}</Text>
+              </View>
+            </>
+          )}
           
           <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
             <Text style={styles.logoutText}>Logout</Text>
@@ -101,6 +147,7 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
+    marginTop: 10,
   },
   logoutText: {
     color: 'white',

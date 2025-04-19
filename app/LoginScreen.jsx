@@ -6,6 +6,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import MyButton from "./MyButton";
 import MyTextinput from "./MyTextInput";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { supabase } from './supabaseConfig';
 
 const LoginScreen = () => {
     const navigation = useNavigation();
@@ -17,20 +18,20 @@ const LoginScreen = () => {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
             
-            // Store auth state in AsyncStorage for persistence
             await AsyncStorage.setItem('userToken', user.uid);
             
-            // Check if user is admin
             if (user && user.email && ["admin@example.com", "a@gmail.com"].includes(user.email)) {
                 navigation.reset({
                     index: 0,
                     routes: [{ name: 'Admin' }],
                 });
             } else {
-                // Navigate to StudentDetails for regular users
+                // Check if user has stored student details
+                const storedDetails = await AsyncStorage.getItem(`studentDetails_${user.email}`);
+                
                 navigation.reset({
                     index: 0,
-                    routes: [{ name: 'StudentDetails' }],
+                    routes: [{ name: storedDetails ? 'TreeDataForm' : 'StudentDetails' }],
                 });
             }
         } catch(error) { 

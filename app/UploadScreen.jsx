@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, Image, Alert, ActivityIndicator } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import styled from "styled-components/native";
@@ -7,6 +7,9 @@ import { useRoute } from "@react-navigation/native";
 import { useNavigation } from '@react-navigation/native';
 import { useTreeData } from './TreeDataContext';
 import { auth } from './firebaseConfig';
+import { supabase } from './supabaseConfig';
+import { useAuth } from './AuthContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Container = styled.View`
   flex: 1;
@@ -60,20 +63,74 @@ export default function UploadScreen() {
   const [loading, setLoading] = useState(false);
   const route = useRoute();
   const navigation = useNavigation();
-  const context = useTreeData();
-  // Add default empty object for route.params to prevent the TypeError
-  // Safely destructure with optional chaining
-  const { 
-    treeId, 
-    height, 
-    branches, 
-    branchDiameters,
-    mainBranchDiameter,
-    studentName,
-    studentRollNo,
-    studentGroup 
-  } = route.params || {};
-  //console.log("Tree Data:", treeData);
+  const { treeData } = useTreeData();
+  const { currentUser } = useAuth();
+
+  const handleSave = async () => {
+    try {
+      setLoading(true);
+      
+      if (!image) {
+        Alert.alert("Error", "Please upload an image before saving.");
+        return;
+      }
+
+      // Get stored student details
+      const storedDetails = await AsyncStorage.getItem(`studentDetails_${currentUser.email}`);
+      if (!storedDetails) {
+        Alert.alert("Error", "Student details not found. Please complete student details first.");
+        navigation.navigate('StudentDetails');
+        return;
+      }
+
+      const studentDetails = JSON.parse(storedDetails);
+
+      // Use treeData from context instead of route.params
+      if (!treeData || !treeData.stemData || !Array.isArray(treeData.stemData)) {
+        Alert.alert("Error", "Invalid or missing stem data. Please go back and enter the measurements again.");
+        return;
+      }
+
+      const dataToSave = {
+        treeId: treeData.treeId,
+        numBranches: treeData.numBranches,
+        stemData: treeData.stemData,
+        studentName: studentDetails.studentName,
+        studentRollNo: studentDetails.studentRollNo,
+        studentGroup: studentDetails.studentGroup,
+        userEmail: currentUser.email
+      };
+
+      console.log('Data being saved:', dataToSave); // Add this for debugging
+
+      await saveTreeData(dataToSave, image);
+      
+      Alert.alert(
+        "Success", 
+        "Tree data has been saved!",
+        [{ 
+          text: "OK", 
+          onPress: () => {
+            // Reset the tree data context
+            if (context?.resetTreeData) {
+              context.resetTreeData();
+            }
+            // Navigate back to TreeDataForm
+            navigation.reset({
+              index: 0,
+              routes: [{ name: 'TreeDataForm' }],
+            });
+          }
+        }]
+      );
+    } catch (error) {
+      Alert.alert("Error", error.message || "Failed to save data");
+      console.error('Error in handleSave:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Function to pick an image from gallery
   const pickImage = async () => {
     try {
@@ -116,84 +173,6 @@ export default function UploadScreen() {
     } catch (error) {
       Alert.alert("Error", "Failed to access camera");
       console.error(error);
-    }
-  };
-
-  // Function to handle saving data
-  const handleSave = async () => {
-    try {
-      setLoading(true);
-      
-      if (!image) {
-        Alert.alert("Error", "Please upload an image before saving.");
-        return;
-      }
-
-      // Get current user
-      const currentUser = auth.currentUser;
-      if (!currentUser) {
-        Alert.alert("Error", "Please log in to save data");
-        return;
-      }
-
-      // Validate numeric fields
-      const heightNum = parseFloat(route.params.height);
-      const branchesNum = parseInt(route.params.branches, 10);
-      const mainBranchDiameterNum = parseFloat(route.params.mainBranchDiameter);
-      const branchDiametersNum = route.params.branchDiameters.map(d => parseFloat(d));
-
-      // Validate all numeric values
-      if (isNaN(heightNum) || heightNum <= 0) {
-        Alert.alert("Error", "Invalid tree height");
-        return;
-      }
-      if (isNaN(branchesNum) || branchesNum <= 0) {
-        Alert.alert("Error", "Invalid number of branches");
-        return;
-      }
-      if (isNaN(mainBranchDiameterNum) || mainBranchDiameterNum <= 0) {
-        Alert.alert("Error", "Invalid main branch diameter");
-        return;
-      }
-      if (branchDiametersNum.some(d => isNaN(d) || d <= 0)) {
-        Alert.alert("Error", "Invalid branch diameters");
-        return;
-      }
-
-      const dataToSave = {
-        treeId: route.params.treeId,
-        height: heightNum,
-        numBranches: branchesNum,
-        branchDiameters: branchDiametersNum,
-        mainBranchDiameter: mainBranchDiameterNum,
-        studentName: currentUser.displayName || currentUser.email,
-        studentRollNo: route.params.studentRollNo || '0',
-        studentGroup: route.params.studentGroup || 'default',
-        userEmail: currentUser.email
-      };
-
-      await saveTreeData(dataToSave, image);
-      
-      if (context?.resetTreeData) {
-        context.resetTreeData();
-      }
-      
-      Alert.alert(
-        "Success", 
-        "Tree data has been saved!",
-        [{ 
-          text: "OK", 
-          onPress: () => navigation.reset({
-            index: 0,
-            routes: [{ name: 'TreeDataForm' }],
-          })
-        }]
-      );
-    } catch (error) {
-      Alert.alert("Error", error.message || "Failed to save data");
-      console.error(error);
-    } finally {
-      setLoading(false);
     }
   };
 
