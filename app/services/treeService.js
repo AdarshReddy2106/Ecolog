@@ -22,25 +22,33 @@ export async function saveTreeData(treeData, imageUri) {
       throw new Error('User not authenticated. Please log in.');
     }
 
-    // Validate numeric fields first
-    const height = parseFloat(treeData.height);
-    const numBranches = parseInt(treeData.numBranches, 10);
-    const mainBranchDiameter = parseFloat(treeData.mainBranchDiameter);
-    const branchDiameters = treeData.branchDiameters.map(d => parseFloat(d));
+    // Add validation check for stemData
+    if (!treeData.stemData || !Array.isArray(treeData.stemData)) {
+      throw new Error('Invalid stem data format');
+    }
 
-    // Check if any numeric values are invalid
-    if (isNaN(height)) {
-      throw new Error('Invalid tree height');
-    }
-    if (isNaN(numBranches)) {
-      throw new Error('Invalid number of branches');
-    }
-    if (isNaN(mainBranchDiameter)) {
-      throw new Error('Invalid main branch diameter');
-    }
-    if (branchDiameters.some(d => isNaN(d))) {
-      throw new Error('Invalid branch diameters');
-    }
+    // Validate numeric fields
+    const numBranches = parseInt(treeData.numBranches, 10);
+    const stemData = treeData.stemData.map((stem, index) => {
+      if (!stem || typeof stem.height === 'undefined' || typeof stem.diameter === 'undefined') {
+        throw new Error(`Missing data for Primary Stem ${index + 1}`);
+      }
+
+      const height = parseFloat(stem.height);
+      const diameter = parseFloat(stem.diameter);
+
+      if (isNaN(height) || height <= 0) {
+        throw new Error(`Invalid height for Primary Stem ${index + 1}`);
+      }
+      if (isNaN(diameter) || diameter <= 0) {
+        throw new Error(`Invalid diameter for Primary Stem ${index + 1}`);
+      }
+
+      return {
+        height,
+        diameter
+      };
+    });
 
     let imageUrl = null;
     if (imageUri) {
@@ -71,23 +79,21 @@ export async function saveTreeData(treeData, imageUri) {
       imageUrl = publicUrl;
     }
 
-    // Prepare data ensuring all numeric fields have valid numbers
+    // Prepare data for database
     const dbData = {
       "Tree_Id": treeData.treeId || '',
-      "Tree_Height": height,
       "Number_of_Primary_Stems": numBranches,
-      "Primary_Stem_Diameters": branchDiameters,
-      "Main_Branch_Diameter": mainBranchDiameter,
-      "Student_Name": treeData.studentName,  // Use the passed student name
+      "Stem_Data": stemData,
+      "Student_Name": treeData.studentName,
       "Student_Roll_No": treeData.studentRollNo,
       "Student_Group": treeData.studentGroup,
-      "User_Email": treeData.userEmail,
-      "Image_URL": imageUrl,
+      "User_Email": currentUser.email,
       "User_ID": currentUser.uid,
+      "Image_URL": imageUrl,
       "Created_At": new Date().toISOString()
     };
 
-    console.log('Data being saved:', dbData);
+    console.log('Data being sent to database:', dbData);
 
     // Insert data into database
     const { data, error } = await supabase

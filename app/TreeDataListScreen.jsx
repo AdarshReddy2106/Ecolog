@@ -38,12 +38,16 @@ export default function TreeDataListScreen() {
         </Text>
         <Text style={styles.studentInfo}>Group: {item.student_group}</Text>
         <Text style={styles.treeId}>Tree ID: {item.tree_id}</Text>
-        <Text style={styles.treeDetail}>Height: {item.height} cm</Text>
-        <Text style={styles.treeDetail}>Primary Stems: {item.num_primary_stems}</Text>
-        <Text style={styles.treeDetail}>Main Stem Diameter: {item.main_branch_diameter} cm</Text>
-        <Text style={styles.treeDetail}>
-          Primary Stem Diameters: {item.primary_stem_diameters.join(', ')}
-        </Text>
+        <Text style={styles.treeDetail}>Number of Primary Stems: {item.number_of_primary_stems}</Text>
+        
+        {/* Display stem data */}
+        {item.stem_data && item.stem_data.map((stem, index) => (
+          <View key={index} style={styles.stemDetail}>
+            <Text style={styles.stemTitle}>Primary Stem {index + 1}:</Text>
+            <Text style={styles.stemMeasurement}>Height: {stem.height}m</Text>
+            <Text style={styles.stemMeasurement}>Diameter: {stem.diameter}cm</Text>
+          </View>
+        ))}
       </View>
       {item.image_url && (
         <Image 
@@ -160,4 +164,16 @@ const styles = StyleSheet.create({
     marginBottom: 4,
     fontWeight: '500',
   },
+  stemDetail: {
+    marginLeft: 10,
+    marginTop: 5,
+  },
+  stemTitle: {
+    fontWeight: 'bold',
+    color: '#4a7c59',
+  },
+  stemMeasurement: {
+    marginLeft: 10,
+    color: '#333',
+  }
 });

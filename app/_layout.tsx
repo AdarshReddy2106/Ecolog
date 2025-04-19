@@ -8,6 +8,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useFonts } from 'expo-font';
 import { useEffect } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
+import { StudentProvider } from './StudentContext';
 
 // Prevent the splash screen from auto-hiding
 SplashScreen.preventAutoHideAsync();
@@ -30,24 +31,26 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <TreeDataProvider>
-        <AuthProvider>
-          <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="index" />
-            <Stack.Screen name="HomeScreen" />
-            <Stack.Screen name="LoginScreen" />
-            <Stack.Screen name="SignUpScreen" />
-            <Stack.Screen name="StudentDetails" />
-            <Stack.Screen name="TreeDataForm" />
-            <Stack.Screen name="BranchDetailsForm" />
-            <Stack.Screen name="Upload" />
-            <Stack.Screen name="view-excel" />
-            <Stack.Screen name="admin" />
-            <Stack.Screen name="Profile" />
-          </Stack>
-          <StatusBar style="auto" />
-        </AuthProvider>
-      </TreeDataProvider>
+      <AuthProvider>
+        <TreeDataProvider>
+          <StudentProvider>
+            <Stack screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="index" />
+              <Stack.Screen name="HomeScreen" />
+              <Stack.Screen name="LoginScreen" />
+              <Stack.Screen name="SignUpScreen" />
+              <Stack.Screen name="StudentDetails" />
+              <Stack.Screen name="TreeDataForm" />
+              <Stack.Screen name="BranchDetailsForm" />
+              <Stack.Screen name="Upload" />
+              <Stack.Screen name="view-excel" />
+              <Stack.Screen name="admin" />
+              <Stack.Screen name="Profile" />
+            </Stack>
+            <StatusBar style="auto" />
+          </StudentProvider>
+        </TreeDataProvider>
+      </AuthProvider>
     </ThemeProvider>
   );
 }

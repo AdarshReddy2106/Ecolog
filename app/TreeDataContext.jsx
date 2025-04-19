@@ -55,10 +55,11 @@ const TreeDataContext = createContext();
 export const TreeDataProvider = ({ children }) => {
   const [treeData, setTreeData] = useState({
     treeId: '',
-    height: 0,
     numBranches: 0,
-    mainBranchDiameter: 0,
-    branchDiameters: []
+    stemData: [], // Updated to store both height and diameter for each stem
+    studentName: '',
+    studentRollNo: '',
+    studentGroup: ''
   });
 
   const updateTreeData = (newData) => {
@@ -71,10 +72,11 @@ export const TreeDataProvider = ({ children }) => {
   const resetTreeData = () => {
     setTreeData({
       treeId: '',
-      height: 0,
       numBranches: 0,
-      mainBranchDiameter: 0,
-      branchDiameters: []
+      stemData: [],
+      studentName: '',
+      studentRollNo: '',
+      studentGroup: ''
     });
   };
 

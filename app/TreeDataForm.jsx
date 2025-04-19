@@ -60,17 +60,13 @@ const TreeDataForm = () => {
   const { loading } = useAuth();
   
   const [treeId, setTreeId] = useState('');
-  const [height, setHeight] = useState('');
   const [numBranches, setNumBranches] = useState('');
-  const [mainBranchDiameter, setMainBranchDiameter] = useState('');
 
   useEffect(() => {
     // Initialize form with context values
     if (treeData) {
       setTreeId(treeData.treeId || '');
-      setHeight(treeData.height ? treeData.height.toString() : '');
       setNumBranches(treeData.numBranches ? treeData.numBranches.toString() : '');
-      setMainBranchDiameter(treeData.mainBranchDiameter ? treeData.mainBranchDiameter.toString() : '');
     }
   }, [treeData]);
 
@@ -82,7 +78,7 @@ const TreeDataForm = () => {
 
   const handleNext = () => {
     // Validate inputs
-    if (!treeId || !height || !numBranches || !mainBranchDiameter) {
+    if (!treeId || !numBranches) {
       Alert.alert('Error', 'All fields are required!');
       return;
     }
@@ -91,31 +87,17 @@ const TreeDataForm = () => {
     const { studentName, studentRollNo, studentGroup } = treeData;
 
     // Convert to numbers and validate
-    const heightNum = parseFloat(height);
     const branchesNum = parseInt(numBranches, 10);
-    const mainDiameterNum = parseFloat(mainBranchDiameter);
-
-    if (isNaN(heightNum) || heightNum <= 0) {
-      Alert.alert('Error', 'Please enter a valid height (must be greater than 0)');
-      return;
-    }
 
     if (isNaN(branchesNum) || branchesNum < 1) {
       Alert.alert('Error', 'Please enter a valid number of branches (must be at least 1)');
       return;
     }
 
-    if (isNaN(mainDiameterNum) || mainDiameterNum <= 0) {
-      Alert.alert('Error', 'Please enter a valid main branch diameter (must be greater than 0)');
-      return;
-    }
-
     // Update context with validated numeric values
     updateTreeData({
       treeId,
-      height: heightNum,
       numBranches: branchesNum,
-      mainBranchDiameter: mainDiameterNum,
       studentName,
       studentRollNo,
       studentGroup
@@ -123,9 +105,7 @@ const TreeDataForm = () => {
 
     navigation.navigate('BranchDetailsForm', {
       treeId,
-      height: heightNum,
       branches: branchesNum,
-      mainBranchDiameter: mainDiameterNum,
       studentName,
       studentRollNo,
       studentGroup
@@ -156,38 +136,6 @@ const TreeDataForm = () => {
                 placeholder="Tree ID"
                 value={treeId}
                 onChangeText={setTreeId}
-              />
-            </IconInput>
-
-            <IconInput>
-              <MaterialIcons name="height" size={24} color="black" />
-              <InputField
-                placeholder="Tree Height (in meters)"
-                value={height}
-                onChangeText={(text) => {
-                  // Only allow valid numeric input
-                  const numericValue = text.replace(/[^0-9.]/g, '');
-                  if (numericValue === '' || !isNaN(parseFloat(numericValue))) {
-                    setHeight(numericValue);
-                  }
-                }}
-                keyboardType="numeric"
-              />
-            </IconInput>
-
-            <IconInput>
-              <MaterialCommunityIcons name="diameter" size={24} color="black" />
-              <InputField
-                placeholder="Main Branch Diameter (in cm)"
-                value={mainBranchDiameter}
-                onChangeText={(text) => {
-                  // Only allow valid numeric input
-                  const numericValue = text.replace(/[^0-9.]/g, '');
-                  if (numericValue === '' || !isNaN(parseFloat(numericValue))) {
-                    setMainBranchDiameter(numericValue);
-                  }
-                }}
-                keyboardType="numeric"
               />
             </IconInput>
 

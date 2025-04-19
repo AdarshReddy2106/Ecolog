@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { AntDesign, MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
 import { useTreeData } from './TreeDataContext';
 import { useAuth } from './AuthContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Container = styled.View`
   flex: 1;
@@ -53,31 +54,44 @@ const ButtonText = styled.Text`
 export default function StudentDetails() {
   const navigation = useNavigation();
   const { updateTreeData } = useTreeData();
-  const { user } = useAuth();
+  const { currentUser } = useAuth();
   
   const [name, setName] = useState('');
   const [rollNo, setRollNo] = useState('');
   const [group, setGroup] = useState('');
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (!name || !rollNo || !group) {
       Alert.alert('Error', 'All fields are required!');
       return;
     }
 
-    // Store student details in context
-    updateTreeData({
-      studentName: name,
-      studentRollNo: rollNo,
-      studentGroup: group,
-    });
+    try {
+      // Store student details in AsyncStorage for persistence
+      const studentDetails = {
+        studentName: name,
+        studentRollNo: rollNo,
+        studentGroup: group
+      };
 
-    // Navigate to TreeDataForm
-    navigation.navigate('TreeDataForm', {
-      studentName: name,
-      studentRollNo: rollNo,
-      studentGroup: group,
-    });
+      await AsyncStorage.setItem(
+        `studentDetails_${currentUser.email}`,
+        JSON.stringify(studentDetails)
+      );
+
+      // Store in context
+      updateTreeData({
+        studentName: name,
+        studentRollNo: rollNo,
+        studentGroup: group
+      });
+
+      // Navigate to TreeDataForm without creating a database entry
+      navigation.navigate('TreeDataForm');
+    } catch (error) {
+      Alert.alert('Error', 'Failed to save student details');
+      console.error(error);
+    }
   };
 
   return (
