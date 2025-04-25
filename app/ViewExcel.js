@@ -1,11 +1,13 @@
 import { View, StyleSheet, Linking, TouchableOpacity, Text, ImageBackground } from 'react-native';
 import React from 'react';
 import { useNavigation } from '@react-navigation/native';
-import Admin from './Admin';
-import TreeDataForm from './TreeDataForm';
+import AdminTreeFormHeader from './components/AdminTreeFormHeader';
+import { useAuth } from './AuthContext';
 
 const ViewExcel = () => {
   const navigation = useNavigation();
+  const { currentUser } = useAuth();
+  const isAdmin = currentUser?.email === 'a@gmail.com';
 
   const openGoogleSheet = () => {
     const url = 'https://docs.google.com/spreadsheets/d/1__3lv4jGlz6Vy0exS3s5geuIr-GgdzUN/edit?gid=1816924567#gid=1816924567';
@@ -16,25 +18,25 @@ const ViewExcel = () => {
 
   return (
     <View style={styles.container}>
-    <ImageBackground
-    source={require("../assets/images/forest.png")}
-    resizeMode="cover"
-    style={styles.imagebackground}>
-      
-      <TouchableOpacity style={styles.button} onPress={openGoogleSheet}>
-        <Text style={styles.buttonText}>Open Google Sheet</Text>
-      </TouchableOpacity>
+      {isAdmin && <AdminTreeFormHeader />}
+      <ImageBackground
+        source={require("../assets/images/forest.png")}
+        resizeMode="cover"
+        style={styles.imagebackground}
+      >
+        <View style={styles.contentContainer}>
+          <TouchableOpacity style={styles.button} onPress={openGoogleSheet}>
+            <Text style={styles.buttonText}>Open Google Sheet</Text>
+          </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('TreeDataForm')}>
-        <Text style={styles.buttonText}>Go to Tree Data Form</Text>
-      </TouchableOpacity>
-      
-      {/* Only add back button if coming from AdminDashboard */}
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Admin')}>
-        <Text style={styles.buttonText}>Back to AdminDashboard</Text>
-      </TouchableOpacity>
-    
-    </ImageBackground>
+          <TouchableOpacity 
+            style={[styles.button, styles.backButton]} 
+            onPress={() => navigation.goBack()}
+          >
+            <Text style={styles.buttonText}>Back to AdminDashboard</Text>
+          </TouchableOpacity>
+        </View>
+      </ImageBackground>
     </View>
   );
 };
@@ -42,37 +44,35 @@ const ViewExcel = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'column'
+    backgroundColor: '#000',
   },
   imagebackground: {
     flex: 1,
-    width: "100%",
-    height: "120%",
-    paddingBottom: 100,
-    resizeMode: 'cover',
-    justifyContent: 'center',
+    width: '100%',
   },
-  header: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
+  contentContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
   },
   button: {
-    height: 60,
-    width:150,
-    borderRadius: 20,
-    justifyContent: 'center',
-    backgroundColor: 'rgba(0,0,0,1.5)',
-    padding: 6,
-    marginLeft:100,
-    marginBottom: 50,
+    backgroundColor: '#4a7c59',
+    padding: 15,
+    borderRadius: 10,
+    width: '80%',
+    alignItems: 'center',
+    marginVertical: 10,
+    elevation: 5,
+  },
+  backButton: {
+    backgroundColor: '#666',
+    marginTop: 20,
   },
   buttonText: {
-    color: "white",
+    color: 'white',
     fontSize: 18,
-    fontWeight: "bold",
-    textAlign:'center',
-    padding: 4,
+    fontWeight: 'bold',
   },
 });
 

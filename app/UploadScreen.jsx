@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { View, Text, TouchableOpacity, Image, Alert, ActivityIndicator } from "react-native";
 import * as ImagePicker from "expo-image-picker";
+import * as MediaLibrary from "expo-media-library"; // Add this import
 import styled from "styled-components/native";
 import { saveTreeData } from "./services/treeService";
 import { useRoute } from "@react-navigation/native";
@@ -10,7 +11,7 @@ import { auth } from './firebaseConfig';
 import { supabase } from './supabaseConfig';
 import { useAuth } from './AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+  
 const Container = styled.View`
   flex: 1;
   background-color: #d8e8d2;
@@ -63,7 +64,7 @@ export default function UploadScreen() {
   const [loading, setLoading] = useState(false);
   const route = useRoute();
   const navigation = useNavigation();
-  const { treeData } = useTreeData();
+  const { resetTreeData } = useTreeData();
   const { currentUser } = useAuth();
 
   const handleSave = async () => {
@@ -75,33 +76,43 @@ export default function UploadScreen() {
         return;
       }
 
-      // Get stored student details
-      const storedDetails = await AsyncStorage.getItem(`studentDetails_${currentUser.email}`);
-      if (!storedDetails) {
-        Alert.alert("Error", "Student details not found. Please complete student details first.");
-        navigation.navigate('StudentDetails');
-        return;
+      let studentDetails;
+
+      // Handle admin case
+      if (currentUser?.email === 'a@gmail.com') {
+        studentDetails = {
+          studentName: 'admin',
+          studentRollNo: '1',
+          studentGroup: 'admin'
+        };
+      } else {
+        // For regular users, check AsyncStorage
+        const storedDetails = await AsyncStorage.getItem(`studentDetails_${currentUser.email}`);
+        if (!storedDetails) {
+          Alert.alert("Error", "Student details not found. Please complete student details first.");
+          navigation.navigate('StudentDetails');
+          return;
+        }
+        studentDetails = JSON.parse(storedDetails);
       }
 
-      const studentDetails = JSON.parse(storedDetails);
+      // Rest of your existing code remains the same
+      const { treeId, branches, stemData } = route.params;
 
-      // Use treeData from context instead of route.params
-      if (!treeData || !treeData.stemData || !Array.isArray(treeData.stemData)) {
+      if (!stemData || !Array.isArray(stemData)) {
         Alert.alert("Error", "Invalid or missing stem data. Please go back and enter the measurements again.");
         return;
       }
 
       const dataToSave = {
-        treeId: treeData.treeId,
-        numBranches: treeData.numBranches,
-        stemData: treeData.stemData,
+        treeId,
+        numBranches: branches,
+        stemData,
         studentName: studentDetails.studentName,
         studentRollNo: studentDetails.studentRollNo,
         studentGroup: studentDetails.studentGroup,
         userEmail: currentUser.email
       };
-
-      console.log('Data being saved:', dataToSave); // Add this for debugging
 
       await saveTreeData(dataToSave, image);
       
@@ -111,10 +122,8 @@ export default function UploadScreen() {
         [{ 
           text: "OK", 
           onPress: () => {
-            // Reset the tree data context
-            if (context?.resetTreeData) {
-              context.resetTreeData();
-            }
+            // Reset the tree data
+            resetTreeData();
             // Navigate back to TreeDataForm
             navigation.reset({
               index: 0,
@@ -150,7 +159,7 @@ export default function UploadScreen() {
     }
   };
 
-  // Function to take a photo using camera
+  // Function to take a photo without cropping
   const takePhoto = async () => {
     try {
       // Request camera permissions first
@@ -162,9 +171,8 @@ export default function UploadScreen() {
       }
       
       let result = await ImagePicker.launchCameraAsync({
-        allowsEditing: true,
-        aspect: [9, 16],
-        quality: 1,
+        allowsEditing: false, // No automatic cropping
+        quality: 0.8,
       });
       
       if (!result.canceled) {
@@ -172,6 +180,53 @@ export default function UploadScreen() {
       }
     } catch (error) {
       Alert.alert("Error", "Failed to access camera");
+      console.error(error);
+    }
+  };
+
+  // Function specifically to crop the current image
+  const cropCurrentImage = async () => {
+    if (!image) {
+      Alert.alert("Error", "No image to crop");
+      return;
+    }
+
+    try {
+      // First, request permissions to save the image temporarily
+      const { status } = await MediaLibrary.requestPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert("Permission denied", "Media library permission is required to crop images");
+        return;
+      }
+      
+      // Save the current image to the media library temporarily
+      const asset = await MediaLibrary.createAssetAsync(image);
+      
+      // Now launch the image picker with editing enabled
+      // The user will need to select the image they just saved
+      Alert.alert(
+        "Crop Image",
+        "Select the same image from your recent photos and then crop it",
+        [
+          {
+            text: "OK",
+            onPress: async () => {
+              const result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                allowsEditing: true, // Enable crop interface
+                aspect: [9, 16],
+                quality: 1,
+              });
+              
+              if (!result.canceled) {
+                setImage(result.assets[0].uri);
+              }
+            }
+          }
+        ]
+      );
+    } catch (error) {
+      Alert.alert("Error", "Failed to crop image");
       console.error(error);
     }
   };
@@ -197,6 +252,13 @@ export default function UploadScreen() {
         <UploadButton onPress={takePhoto}>
           <Text style={{ fontSize: 16, color: "#4a7c59" }}>📷 Take a Photo</Text>
         </UploadButton>
+        
+        {/* Only show crop button when there's an image */}
+        {image && (
+          <UploadButton onPress={cropCurrentImage}>
+            <Text style={{ fontSize: 16, color: "#4a7c59" }}>✂️ Crop Image</Text>
+          </UploadButton>
+        )}
         
         <Button onPress={handleSave} disabled={loading}>
           {loading ? (

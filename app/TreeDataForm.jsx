@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { View, Image, Alert, ImageBackground, StyleSheet, SafeAreaView } from 'react-native';
 import styled from 'styled-components/native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { AntDesign, MaterialIcons, Octicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTreeData } from './TreeDataContext';
 import { MaterialCommunityIcons as MaterialCommunityIconsExpo } from '@expo/vector-icons';
 import Header from './components/Header';
 import { useAuth } from './AuthContext';
+import AdminTreeFormHeader from './components/AdminTreeFormHeader';
 
 const Container = styled.View`
   flex: 1;
@@ -56,11 +57,12 @@ const ButtonText = styled.Text`
 
 const TreeDataForm = () => {
   const navigation = useNavigation();
-  const { treeData, updateTreeData } = useTreeData();
-  const { loading } = useAuth();
+  const { treeData, updateTreeData, resetTreeData } = useTreeData();
+  const { currentUser } = useAuth();
   
   const [treeId, setTreeId] = useState('');
   const [numBranches, setNumBranches] = useState('');
+  const [isAdminInitialized, setIsAdminInitialized] = useState(false);
 
   useEffect(() => {
     // Initialize form with context values
@@ -70,9 +72,26 @@ const TreeDataForm = () => {
     }
   }, [treeData]);
 
-  if (loading) {
-    return null; // or a loading spinner
-  }
+  // Use useFocusEffect to reset form when screen comes into focus
+  useFocusEffect(
+    React.useCallback(() => {
+      // Reset form data when screen is focused
+      setTreeId('');
+      setNumBranches('');
+      resetTreeData();  // Reset the context data
+      
+      // If admin, initialize with admin details
+      if (currentUser?.email === 'a@gmail.com' && !isAdminInitialized) {
+        updateTreeData({
+          studentName: 'admin',
+          studentRollNo: '1',
+          studentGroup: 'admin',
+          isAdmin: true
+        });
+        setIsAdminInitialized(true);
+      }
+    }, [currentUser, isAdminInitialized])
+  );
 
   console.log('Current treeData:', treeData); // Add this for debugging
 
@@ -82,9 +101,6 @@ const TreeDataForm = () => {
       Alert.alert('Error', 'All fields are required!');
       return;
     }
-
-    // Get student details from context
-    const { studentName, studentRollNo, studentGroup } = treeData;
 
     // Convert to numbers and validate
     const branchesNum = parseInt(numBranches, 10);
@@ -98,19 +114,17 @@ const TreeDataForm = () => {
     updateTreeData({
       treeId,
       numBranches: branchesNum,
-      studentName,
-      studentRollNo,
-      studentGroup
+      isAdmin: currentUser?.email === 'a@gmail.com'
     });
 
     navigation.navigate('BranchDetailsForm', {
       treeId,
       branches: branchesNum,
-      studentName,
-      studentRollNo,
-      studentGroup
+      isAdmin: currentUser?.email === 'a@gmail.com'
     });
   };
+
+  const isAdmin = currentUser?.email === 'a@gmail.com';
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -119,7 +133,7 @@ const TreeDataForm = () => {
         style={styles.backgroundImage}
         resizeMode="cover"
       >
-        <Header />
+        {isAdmin ? <AdminTreeFormHeader /> : <Header />}
         <Container>
           <Card>
             <View style={styles.iconContainer}>

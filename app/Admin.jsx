@@ -1,74 +1,114 @@
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity, Text, ImageBackground } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Text, ImageBackground, SafeAreaView, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { rgb } from 'polished';
+import { MaterialIcons } from '@expo/vector-icons';
+import AdminHeader from './components/AdminHeader';
+import { auth } from './firebaseConfig';
 
 const Admin = () => {
   const navigation = useNavigation();
 
+  const handleLogout = async () => {
+    Alert.alert(
+      "Confirm Logout",
+      "Are you sure you want to logout?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel"
+        },
+        {
+          text: "Logout",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await auth.signOut();
+              navigation.reset({
+                index: 0,
+                routes: [{ name: 'HomeScreen' }],
+              });
+            } catch (error) {
+              console.error('Error signing out:', error);
+              Alert.alert('Error', 'Failed to logout. Please try again.');
+            }
+          }
+        }
+      ],
+      { cancelable: true }
+    );
+  };
+
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <AdminHeader />
       <ImageBackground
         source={require("../assets/images/forest.png")}
         resizeMode="cover"
-        style={styles.imagebackground}
+        style={styles.imageBackground}
       >
-        <TouchableOpacity 
-          style={styles.button} 
-          onPress={() => navigation.navigate('ViewExcel')}
-        >
-          <Text style={styles.buttonText}>View Excel Data</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={styles.button} 
-          onPress={() => navigation.navigate('TreeDataForm')}
-        >
-          <Text style={styles.buttonText}>Add tree data</Text>
-        </TouchableOpacity>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity 
+            style={styles.button} 
+            onPress={() => navigation.navigate('ViewExcel')}
+          >
+            <MaterialIcons name="table-chart" size={24} color="white" />
+            <Text style={styles.buttonText}>View Excel Data</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={styles.button} 
+            onPress={() => navigation.navigate('TreeDataForm')}
+          >
+            <MaterialIcons name="add-circle-outline" size={24} color="white" />
+            <Text style={styles.buttonText}>Add Tree Data</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={[styles.button, styles.logoutButton]} 
+            onPress={handleLogout}
+          >
+            <MaterialIcons name="logout" size={24} color="white" />
+            <Text style={styles.buttonText}>Logout</Text>
+          </TouchableOpacity>
+        </View>
       </ImageBackground>
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'column'
   },
-  imagebackground: {
+  imageBackground: {
     flex: 1,
     width: "100%",
-    height: "120%",
-    paddingBottom: 100,
-    resizeMode: 'cover',
+  },
+  buttonContainer: {
+    flex: 1,
     justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
   },
   button: {
-    height: 60,
-    width: 150,
-    borderRadius: 20,
-    justifyContent: 'center',
-    backgroundColor: 'rgba(0,0,0,1.5)',
-    padding: 6,
-    marginLeft: 100,
-    marginBottom: 50,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(74, 124, 89, 0.9)', // #4a7c59 with opacity
+    padding: 15,
+    borderRadius: 10,
+    width: '80%',
+    marginVertical: 10,
+    elevation: 5,
   },
   buttonText: {
     color: "white",
     fontSize: 18,
     fontWeight: "bold",
-    textAlign: 'center',
-    padding: 4,
+    marginLeft: 10,
   },
-  header: {
-    fontSize: 46,
-    borderRadius: 45,
-    fontWeight: 'bold',
-    backgroundColor: rgb(127, 212, 78),
-    color: rgb(96, 219, 40),
-    marginBottom: 30,
-  }
+  logoutButton: {
+    backgroundColor: 'rgba(220, 53, 69, 0.9)', // red color for logout
+  },
 });
 
 export default Admin;

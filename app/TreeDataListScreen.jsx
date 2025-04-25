@@ -45,7 +45,7 @@ export default function TreeDataListScreen() {
           <View key={index} style={styles.stemDetail}>
             <Text style={styles.stemTitle}>Primary Stem {index + 1}:</Text>
             <Text style={styles.stemMeasurement}>Height: {stem.height}m</Text>
-            <Text style={styles.stemMeasurement}>Diameter: {stem.diameter}cm</Text>
+            <Text style={styles.stemMeasurement}>Circumference: {stem.circumference}cm</Text>
           </View>
         ))}
       </View>
