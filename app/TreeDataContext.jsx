@@ -59,7 +59,8 @@ export const TreeDataProvider = ({ children }) => {
     stemData: [], // Updated to store both height and diameter for each stem
     studentName: '',
     studentRollNo: '',
-    studentGroup: ''
+    studentGroup: '',
+    isAdmin: false,
   });
 
   const updateTreeData = (newData) => {
@@ -76,7 +77,8 @@ export const TreeDataProvider = ({ children }) => {
       stemData: [],
       studentName: '',
       studentRollNo: '',
-      studentGroup: ''
+      studentGroup: '',
+      isAdmin: false,
     });
   };
 

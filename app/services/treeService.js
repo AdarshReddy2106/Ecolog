@@ -30,23 +30,23 @@ export async function saveTreeData(treeData, imageUri) {
     // Validate numeric fields
     const numBranches = parseInt(treeData.numBranches, 10);
     const stemData = treeData.stemData.map((stem, index) => {
-      if (!stem || typeof stem.height === 'undefined' || typeof stem.diameter === 'undefined') {
+      if (!stem || typeof stem.height === 'undefined' || typeof stem.circumference === 'undefined') {
         throw new Error(`Missing data for Primary Stem ${index + 1}`);
       }
 
       const height = parseFloat(stem.height);
-      const diameter = parseFloat(stem.diameter);
+      const circumference = parseFloat(stem.circumference);
 
       if (isNaN(height) || height <= 0) {
         throw new Error(`Invalid height for Primary Stem ${index + 1}`);
       }
-      if (isNaN(diameter) || diameter <= 0) {
-        throw new Error(`Invalid diameter for Primary Stem ${index + 1}`);
+      if (isNaN(circumference) || circumference <= 0) {
+        throw new Error(`Invalid circumference for Primary Stem ${index + 1}`);
       }
 
       return {
         height,
-        diameter
+        circumference
       };
     });
 

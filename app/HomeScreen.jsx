@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, Alert } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { useRouter } from 'expo-router';
 import { useAuth } from "./AuthContext";
 import { auth } from './firebaseConfig';
@@ -7,7 +7,13 @@ import Header from './components/Header';
 
 export default function HomeScreen() {
   const router = useRouter();
-  const { currentUser } = useAuth();
+  const { currentUser, isAdmin } = useAuth();
+
+  useEffect(() => {
+    if (currentUser && isAdmin) {
+      router.replace('Admin');
+    }
+  }, [currentUser, isAdmin]);
 
   const handleLogout = async () => {
     // Show confirmation alert

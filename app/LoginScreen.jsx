@@ -15,27 +15,35 @@ const LoginScreen = () => {
 
     const handleLogin = async() => {
         try {
-            const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
+            const { user } = await signInWithEmailAndPassword(auth, email, password);
             
-            await AsyncStorage.setItem('userToken', user.uid);
-            
-            if (user && user.email && ["admin@example.com", "a@gmail.com"].includes(user.email)) {
+            // Check if the user is admin
+            if (user.email === 'a@gmail.com') {
                 navigation.reset({
                     index: 0,
                     routes: [{ name: 'Admin' }],
                 });
-            } else {
-                // Check if user has stored student details
-                const storedDetails = await AsyncStorage.getItem(`studentDetails_${user.email}`);
-                
+                return;
+            }
+
+            // For non-admin users, check if they have submitted details before
+            const storedDetails = await AsyncStorage.getItem(`studentDetails_${user.email}`);
+            
+            if (storedDetails) {
+                // If they have submitted details before, go to TreeDataForm
                 navigation.reset({
                     index: 0,
-                    routes: [{ name: storedDetails ? 'TreeDataForm' : 'StudentDetails' }],
+                    routes: [{ name: 'TreeDataForm' }],
+                });
+            } else {
+                // If this is their first time, go to StudentDetails
+                navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'StudentDetails' }],
                 });
             }
-        } catch(error) { 
-            Alert.alert('Error', error?.message || "An unknown error occurred.")
+        } catch (error) {
+            Alert.alert('Error', error.message);
         }
     };
 

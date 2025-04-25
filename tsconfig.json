@@ -12,6 +12,8 @@
     "**/*.ts",
     "**/*.tsx",
     "**/*.jsx",
-    "app/ViewExcel.js"
+    "app/ViewExcel.js",
+    ".expo/types/**/*.ts",
+    "expo-env.d.ts"
   ]
 }

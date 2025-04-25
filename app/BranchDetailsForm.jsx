@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, ScrollView, Image, Alert, Text } from 'react-native';
 import styled from 'styled-components/native';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -71,15 +71,23 @@ const ButtonText = styled.Text`
 export default function BranchDetailsForm() {
   const navigation = useNavigation();
   const route = useRoute();
-  const { treeId, branches, studentName, studentRollNo, studentGroup } = route.params;
+  const { treeId, branches } = route.params;
   const { updateTreeData } = useTreeData();
   
   const [stemData, setStemData] = useState(
     Array(branches).fill().map(() => ({
       height: '',
-      diameter: ''
+      circumference: ''
     }))
   );
+
+  useEffect(() => {
+    // Reset stem data when component mounts
+    setStemData(Array(branches).fill().map(() => ({
+      height: '',
+      circumference: ''
+    })));
+  }, [branches]);
 
   const handleNext = () => {
     if (!treeId || !branches) {
@@ -90,28 +98,28 @@ export default function BranchDetailsForm() {
     // Validate all stem measurements
     const validatedData = stemData.map((stem, index) => {
       const height = parseFloat(stem.height);
-      const diameter = parseFloat(stem.diameter);
+      const circumference = parseFloat(stem.circumference);
 
       if (!stem.height || stem.height.trim() === '') {
         Alert.alert("Error", `Please enter height for Primary Stem ${index + 1}`);
         return null;
       }
-      if (!stem.diameter || stem.diameter.trim() === '') {
-        Alert.alert("Error", `Please enter diameter for Primary Stem ${index + 1}`);
+      if (!stem.circumference || stem.circumference.trim() === '') {
+        Alert.alert("Error", `Please enter circumference for Primary Stem ${index + 1}`);
         return null;
       }
       if (isNaN(height) || height <= 0) {
         Alert.alert("Error", `Please enter a valid height for Primary Stem ${index + 1}`);
         return null;
       }
-      if (isNaN(diameter) || diameter <= 0) {
-        Alert.alert("Error", `Please enter a valid diameter for Primary Stem ${index + 1}`);
+      if (isNaN(circumference) || circumference <= 0) {
+        Alert.alert("Error", `Please enter a valid circumference for Primary Stem ${index + 1}`);
         return null;
       }
 
       return {
         height: height,
-        diameter: diameter
+        circumference: circumference
       };
     });
 
@@ -124,9 +132,6 @@ export default function BranchDetailsForm() {
       treeId,
       numBranches: branches,
       stemData: validatedData,
-      studentName,
-      studentRollNo,
-      studentGroup
     });
 
     // Navigate to UploadScreen with the validated data
@@ -134,9 +139,6 @@ export default function BranchDetailsForm() {
       treeId,
       branches,
       stemData: validatedData,
-      studentName,
-      studentRollNo,
-      studentGroup
     });
   };
 
@@ -180,12 +182,12 @@ export default function BranchDetailsForm() {
                 <IconInput>
                   <MaterialCommunityIcons name="diameter-outline" size={24} color="black" />
                   <InputField
-                    placeholder="Diameter (in cm)"
-                    value={stem.diameter}
+                    placeholder="Circumference (in cm)"
+                    value={stem.circumference}
                     onChangeText={(value) => {
                       const numericValue = value.replace(/[^0-9.]/g, '');
                       if (numericValue === '' || !isNaN(parseFloat(numericValue))) {
-                        updateStemData(index, 'diameter', numericValue);
+                        updateStemData(index, 'circumference', numericValue);
                       }
                     }}
                     keyboardType="numeric"

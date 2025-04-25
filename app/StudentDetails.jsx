@@ -87,7 +87,10 @@ export default function StudentDetails() {
       });
 
       // Navigate to TreeDataForm without creating a database entry
-      navigation.navigate('TreeDataForm');
+      navigation.reset({
+        index: 0, 
+        routes:[{name:"TreeDataForm"}],
+      });
     } catch (error) {
       Alert.alert('Error', 'Failed to save student details');
       console.error(error);

@@ -9,8 +9,9 @@ import { useFonts } from 'expo-font';
 import { useEffect } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
 import { StudentProvider } from './StudentContext';
+import AuthRoute from './components/AuthRoute';
 
-// Prevent the splash screen from auto-hiding
+// Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -21,6 +22,8 @@ export default function RootLayout() {
 
   useEffect(() => {
     if (loaded) {
+      // Hide the splash screen after the fonts have loaded and the
+      // UI is ready.
       SplashScreen.hideAsync();
     }
   }, [loaded]);
@@ -43,10 +46,11 @@ export default function RootLayout() {
               <Stack.Screen name="TreeDataForm" />
               <Stack.Screen name="BranchDetailsForm" />
               <Stack.Screen name="Upload" />
-              <Stack.Screen name="view-excel" />
-              <Stack.Screen name="admin" />
+              <Stack.Screen name="ViewExcel" />
+              <Stack.Screen name="Admin" />
               <Stack.Screen name="Profile" />
             </Stack>
+            
             <StatusBar style="auto" />
           </StudentProvider>
         </TreeDataProvider>
