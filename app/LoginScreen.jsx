@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { ImageBackground, StyleSheet, Text, TouchableOpacity, View, Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { auth } from './firebaseConfig';
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
 import MyButton from "./MyButton";
 import MyTextinput from "./MyTextInput";
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -12,6 +12,20 @@ const LoginScreen = () => {
     const navigation = useNavigation();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+
+    const handleForgotPassword = async () => {
+        if (!email) {
+            Alert.alert('Error', 'Please enter your email address first');
+            return;
+        }
+
+        try {
+            await sendPasswordResetEmail(auth, email);
+            Alert.alert('Success', 'Password reset email sent! Please check your inbox.');
+        } catch (error) {
+            Alert.alert('Error', error.message);
+        }
+    };
 
     const handleLogin = async() => {
         try {
@@ -55,14 +69,18 @@ const LoginScreen = () => {
                     <MyTextinput placeholder="Enter E-mail or User Name" value={email} onChangeText={setEmail} />
                     <MyTextinput placeholder="Password" secureTextEntry value={password} onChangeText={setPassword} />
 
+                    <TouchableOpacity onPress={handleForgotPassword} style={styles.forgotPasswordContainer}>
+                        <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+                    </TouchableOpacity>
+
+                    <MyButton title="Login" onPress={handleLogin} />
+
                     <View style={styles.signupContainer}>
                         <Text style={styles.textDontHave}>Don't have an account yet? </Text>
                         <TouchableOpacity onPress={() => navigation.navigate("SignUpScreen")}> 
                             <Text style={styles.linkButton}>Sign Up</Text>
                         </TouchableOpacity>
                     </View>
-
-                    <MyButton title="Login" onPress={handleLogin} />
                     
                 </View>
             </ImageBackground>
@@ -99,9 +117,8 @@ const styles = StyleSheet.create({
     signupContainer: {
         flexDirection: "row",
         alignItems: "center",
-        alignSelf: "flex-end",
-        marginRight: 10,
-        marginBottom: 5,
+        justifyContent: "center",
+        marginTop: 20,
     },
     textDontHave: {
         color: "black",
@@ -110,5 +127,14 @@ const styles = StyleSheet.create({
         color: "blue",
         fontWeight: "bold",
         marginLeft: 5,
+    },
+    forgotPasswordContainer: {
+        alignSelf: "flex-end",
+        marginRight: 10,
+        marginBottom: 15,
+    },
+    forgotPasswordText: {
+        color: "blue",
+        fontWeight: "bold",
     },
 });
