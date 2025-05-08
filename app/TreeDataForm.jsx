@@ -81,7 +81,7 @@ const TreeDataForm = () => {
       resetTreeData();  // Reset the context data
       
       // If admin, initialize with admin details
-      if (currentUser?.email === 'a@gmail.com' && !isAdminInitialized) {
+      if (currentUser?.email === 'miyawaki.iitpkd@gmail.com' && !isAdminInitialized) {
         updateTreeData({
           studentName: 'admin',
           studentRollNo: '1',
@@ -114,17 +114,17 @@ const TreeDataForm = () => {
     updateTreeData({
       treeId,
       numBranches: branchesNum,
-      isAdmin: currentUser?.email === 'a@gmail.com'
+      isAdmin: currentUser?.email === 'miyawaki.iitpkd@gmail.com'
     });
 
     navigation.navigate('BranchDetailsForm', {
       treeId,
       branches: branchesNum,
-      isAdmin: currentUser?.email === 'a@gmail.com'
+      isAdmin: currentUser?.email === 'miyawaki.iitpkd@gmail.com'
     });
   };
 
-  const isAdmin = currentUser?.email === 'a@gmail.com';
+  const isAdmin = currentUser?.email === 'miyawaki.iitpkd@gmail.com';
 
   return (
     <SafeAreaView style={styles.safeArea}>

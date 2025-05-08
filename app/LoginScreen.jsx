@@ -32,7 +32,7 @@ const LoginScreen = () => {
             const { user } = await signInWithEmailAndPassword(auth, email, password);
             
             // Check if the user is admin
-            if (user.email === 'a@gmail.com') {
+            if (user.email === 'miyawaki.iitpkd@gmail.com') {
                 navigation.reset({
                     index: 0,
                     routes: [{ name: 'Admin' }],

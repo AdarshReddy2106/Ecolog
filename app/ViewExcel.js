@@ -7,7 +7,7 @@ import { useAuth } from './AuthContext';
 const ViewExcel = () => {
   const navigation = useNavigation();
   const { currentUser } = useAuth();
-  const isAdmin = currentUser?.email === 'a@gmail.com';
+  const isAdmin = currentUser?.email === 'miyawaki.iitpkd@gmail.com';
 
   const openGoogleSheet = () => {
     const url = 'https://docs.google.com/spreadsheets/d/1__3lv4jGlz6Vy0exS3s5geuIr-GgdzUN/edit?gid=1816924567#gid=1816924567';

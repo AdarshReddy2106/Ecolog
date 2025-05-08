@@ -79,7 +79,7 @@ export default function UploadScreen() {
       let studentDetails;
 
       // Handle admin case
-      if (currentUser?.email === 'a@gmail.com') {
+      if (currentUser?.email === 'miyawaki.iitpkd@gmail.com') {
         studentDetails = {
           studentName: 'admin',
           studentRollNo: '1',
