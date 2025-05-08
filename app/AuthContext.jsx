@@ -13,7 +13,7 @@ export const AuthProvider = ({ children }) => {
       setCurrentUser(user);
       // Check if user is admin
       if (user) {
-        setIsAdmin(user.email === 'a@gmail.com'); // Use your admin email
+        setIsAdmin(user.email === 'miyawaki.iitpkd@gmail.com'); // Use your admin email
       } else {
         setIsAdmin(false);
       }

@@ -95,26 +95,23 @@ export default function BranchDetailsForm() {
       return;
     }
 
-    // Validate all stem measurements
+    // Collect all validation errors
+    const errors = [];
     const validatedData = stemData.map((stem, index) => {
       const height = parseFloat(stem.height);
       const circumference = parseFloat(stem.circumference);
 
       if (!stem.height || stem.height.trim() === '') {
-        Alert.alert("Error", `Please enter height for Primary Stem ${index + 1}`);
-        return null;
+        errors.push(`Height for Primary Stem ${index + 1}`);
       }
       if (!stem.circumference || stem.circumference.trim() === '') {
-        Alert.alert("Error", `Please enter circumference for Primary Stem ${index + 1}`);
-        return null;
+        errors.push(`Circumference for Primary Stem ${index + 1}`);
       }
       if (isNaN(height) || height <= 0) {
-        Alert.alert("Error", `Please enter a valid height for Primary Stem ${index + 1}`);
-        return null;
+        errors.push(`Valid height for Primary Stem ${index + 1}`);
       }
       if (isNaN(circumference) || circumference <= 0) {
-        Alert.alert("Error", `Please enter a valid circumference for Primary Stem ${index + 1}`);
-        return null;
+        errors.push(`Valid circumference for Primary Stem ${index + 1}`);
       }
 
       return {
@@ -123,7 +120,13 @@ export default function BranchDetailsForm() {
       };
     });
 
-    if (validatedData.includes(null)) {
+    // If there are any errors, show them all at once
+    if (errors.length > 0) {
+      Alert.alert(
+        "Required Fields Missing",
+        `Please enter the following required fields:\n\n${errors.join('\n')}`,
+        [{ text: "OK" }]
+      );
       return;
     }
 
@@ -195,6 +198,10 @@ export default function BranchDetailsForm() {
                 </IconInput>
               </StemContainer>
             ))}
+
+            <Text style={{ color: 'red', marginTop: 10, marginBottom: 10, textAlign: 'center' }}>
+              *All fields are required
+            </Text>
 
             <Button onPress={handleNext}>
               <ButtonText>Next</ButtonText>
