@@ -51,7 +51,7 @@ export default function HomeScreen() {
         resizeMode="cover"
         style={styles.imagebackground}
       >
-        <Text style={styles.title}>Tree IQ</Text>
+        <Text style={styles.title}>ECOLOG</Text>
         
         {!currentUser ? (
           <>

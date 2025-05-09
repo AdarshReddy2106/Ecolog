@@ -12,6 +12,7 @@ const LoginScreen = () => {
     const navigation = useNavigation();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [message, setMessage] = useState("");
 
     const handleForgotPassword = async () => {
         if (!email) {
@@ -28,6 +29,12 @@ const LoginScreen = () => {
     };
 
     const handleLogin = async() => {
+        if (!email || !password) {
+            Alert.alert('Error', 'All fields are required!');
+            return;
+        }
+
+  
         try {
             const { user } = await signInWithEmailAndPassword(auth, email, password);
             
@@ -57,16 +64,26 @@ const LoginScreen = () => {
                 });
             }
         } catch (error) {
-            Alert.alert('Error', error.message);
+            if (error.code === "auth/invalid-credential") {
+                Alert.alert('Error', 'Enter valid credentials');
+                return;
+            }
+            if (error.code === "auth/invalid-email") {
+                Alert.alert('Error', 'Enter valid email');
+                return;
+            }
+            else {
+                Alert.alert('Error', error.message);
+            }
         }
     };
 
     return (
         <View style={styles.container}>
             <ImageBackground source={require("../assets/images/blackwp.png")} style={styles.imagebackground}>
-                <Text style={styles.title}>Tree IQ</Text>
+                <Text style={styles.title}>ECOLOG</Text>
                 <View style={styles.inputContainer}>
-                    <MyTextinput placeholder="Enter E-mail or User Name" value={email} onChangeText={setEmail} />
+                    <MyTextinput placeholder="Enter Registered Email" value={email} onChangeText={setEmail} />
                     <MyTextinput placeholder="Password" secureTextEntry value={password} onChangeText={setPassword} />
 
                     <TouchableOpacity onPress={handleForgotPassword} style={styles.forgotPasswordContainer}>

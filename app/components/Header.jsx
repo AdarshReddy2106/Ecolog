@@ -20,7 +20,7 @@ const Header = () => {
 
   return (
     <View style={styles.header}>
-      <Text style={styles.title}>Tree IQ</Text>
+      <Text style={styles.title}>ECOLOG</Text>
       {currentUser && (
         <TouchableOpacity onPress={handleProfilePress} style={styles.profileButton}>
           <Ionicons name="person-circle-outline" size={32} color="black" />
