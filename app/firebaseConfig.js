@@ -9,12 +9,12 @@ import { getFirestore } from "firebase/firestore";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyD4KJ7HA5SKO2wy7FDJMlaPBo4ExUe8kGQ",
-  authDomain: "copy-b1ab7.firebaseapp.com",
-  projectId: "copy-b1ab7",
-  storageBucket: "copy-b1ab7.firebasestorage.app",
-  messagingSenderId: "154588596563",
-  appId: "1:154588596563:web:839bbdfba02a23f627b9a6"
+  apiKey: "AIzaSyCGCdVqjTFyxvGmbqU9kHId62R9ONY0BKI",
+  authDomain: "miyawaki-app.firebaseapp.com",
+  projectId: "miyawaki-app",
+  storageBucket: "miyawaki-app.firebasestorage.app",
+  messagingSenderId: "591664820720",
+  appId: "1:591664820720:web:32ab2e65df7b0884b1ad35"
 };
 
 // Initialize Firebase

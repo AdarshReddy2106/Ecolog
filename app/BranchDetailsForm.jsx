@@ -101,15 +101,15 @@ export default function BranchDetailsForm() {
       const height = parseFloat(stem.height);
       const circumference = parseFloat(stem.circumference);
 
-      if (!stem.height || stem.height.trim() === '') {
-        errors.push(`Height for Primary Stem ${index + 1}`);
-      }
+      // if (!stem.height || stem.height.trim() === '') {
+      //   errors.push(`Height for Primary Stem ${index + 1}`);
+      // }
       if (!stem.circumference || stem.circumference.trim() === '') {
         errors.push(`Circumference for Primary Stem ${index + 1}`);
       }
-      if (isNaN(height) || height <= 0) {
-        errors.push(`Valid height for Primary Stem ${index + 1}`);
-      }
+      // if (isNaN(height) || height < 0) {
+      //   errors.push(`Valid height for Primary Stem ${index + 1}`);
+      // }
       if (isNaN(circumference) || circumference <= 0) {
         errors.push(`Valid circumference for Primary Stem ${index + 1}`);
       }
