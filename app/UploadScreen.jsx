@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, Image, Alert, ActivityIndicator } from "react-native";
+import { View, Text, TouchableOpacity, Image, Alert, ActivityIndicator, ImageBackground, StyleSheet, SafeAreaView } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import * as MediaLibrary from "expo-media-library"; // Add this import
 import styled from "styled-components/native";
@@ -11,13 +11,14 @@ import { auth } from './firebaseConfig';
 import { supabase } from './supabaseConfig';
 import { useAuth } from './AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Header from './components/Header';
   
 const Container = styled.View`
   flex: 1;
-  background-color: #d8e8d2;
+  padding-top: 20px;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  background-color: #d8e8d2;
 `;
 
 const Card = styled.View`
@@ -232,42 +233,63 @@ export default function UploadScreen() {
   };
 
   return (
-    <Container>
-      <Card>
-        <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 10 }}>
-          Upload Tree Image
-        </Text>
-        
-        {image && (
-          <Image
-            source={{ uri: image }}
-            style={{ width: 150, height: 150, borderRadius: 10, marginBottom: 10 }}
-          />
-        )}
-        
-        <UploadButton onPress={pickImage}>
-          <Text style={{ fontSize: 16, color: "#4a7c59" }}>📁 Choose from Gallery</Text>
-        </UploadButton>
-        
-        <UploadButton onPress={takePhoto}>
-          <Text style={{ fontSize: 16, color: "#4a7c59" }}>📷 Take a Photo</Text>
-        </UploadButton>
-        
-        {/* Only show crop button when there's an image */}
-        {image && (
-          <UploadButton onPress={cropCurrentImage}>
-            <Text style={{ fontSize: 16, color: "#4a7c59" }}>✂️ Crop Image</Text>
-          </UploadButton>
-        )}
-        
-        <Button onPress={handleSave} disabled={loading}>
-          {loading ? (
-            <ActivityIndicator color="white" />
-          ) : (
-            <ButtonText>Save Data</ButtonText>
-          )}
-        </Button>
-      </Card>
-    </Container>
+    <SafeAreaView style={styles.safeArea}>
+      <ImageBackground
+        source={require("../assets/images/blackwp.png")}
+        style={styles.backgroundImage}
+        resizeMode="cover"
+      >
+        <Header />
+        <Container>
+          <Card>
+            <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 10 }}>
+              Upload Tree Image
+            </Text>
+            
+            {image && (
+              <Image
+                source={{ uri: image }}
+                style={{ width: 150, height: 150, borderRadius: 10, marginBottom: 10 }}
+              />
+            )}
+            
+            <UploadButton onPress={pickImage}>
+              <Text style={{ fontSize: 16, color: "#4a7c59" }}>📁 Choose from Gallery</Text>
+            </UploadButton>
+            
+            <UploadButton onPress={takePhoto}>
+              <Text style={{ fontSize: 16, color: "#4a7c59" }}>📷 Take a Photo</Text>
+            </UploadButton>
+            
+            {/* Only show crop button when there's an image */}
+            {image && (
+              <UploadButton onPress={cropCurrentImage}>
+                <Text style={{ fontSize: 16, color: "#4a7c59" }}>✂️ Crop Image</Text>
+              </UploadButton>
+            )}
+            
+            <Button onPress={handleSave} disabled={loading}>
+              {loading ? (
+                <ActivityIndicator color="white" />
+              ) : (
+                <ButtonText>Save Data</ButtonText>
+              )}
+            </Button>
+          </Card>
+        </Container>
+      </ImageBackground>
+    </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: 'black',
+  },
+  backgroundImage: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+  },
+});

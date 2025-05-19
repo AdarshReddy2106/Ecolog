@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { View, ScrollView, Image, Alert, Text } from 'react-native';
+import { View, ScrollView, Image, Alert, Text, ImageBackground, StyleSheet, SafeAreaView } from 'react-native';
 import styled from 'styled-components/native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { useTreeData } from './TreeDataContext';
+import Header from './components/Header';
 
 const Container = styled.View`
   flex: 1;
-  min-height: 100%;
-  background-color: #d8e8d2;
+  padding-top: 20px;
   align-items: center;
   justify-content: center;
+  background-color: #d8e8d2;
 `;
 
 const Card = styled.View`
@@ -155,60 +156,81 @@ export default function BranchDetailsForm() {
   };
 
   return (
-    <ScrollView contentContainerStyle={{flexGrow: 1}}>
-      <Container>
-        <View style={{ flex:1, justifyContent: 'center', alignItems: 'center', width: '100%'}}>
-          <Card style={{marginLeft: '1'}}>
-            <View style={{ alignItems: 'center', marginBottom: 10 }}>
-              <Image source={require('../assets/images/tree-icon.png')} style={{ width: 80, height: 80 }} />
-            </View>
-            
-            {stemData.map((stem, index) => (
-              <StemContainer key={index}>
-                <StemTitle>Primary Stem {index + 1}</StemTitle>
+    <SafeAreaView style={styles.safeArea}>
+      <ImageBackground
+        source={require("../assets/images/blackwp.png")}
+        style={styles.backgroundImage}
+        resizeMode="cover"
+      >
+        <Header />
+        <ScrollView contentContainerStyle={{flexGrow: 1}}>
+          <Container>
+            <View style={{ flex:1, justifyContent: 'center', alignItems: 'center', width: '100%'}}>
+              <Card style={{marginLeft: '1'}}>
+                <View style={{ alignItems: 'center', marginBottom: 10 }}>
+                  <Image source={require('../assets/images/tree-icon.png')} style={{ width: 80, height: 80 }} />
+                </View>
                 
-                <IconInput>
-                  <MaterialIcons name="height" size={24} color="black" />
-                  <InputField
-                    placeholder="Height (in meters)"
-                    value={stem.height}
-                    onChangeText={(value) => {
-                      const numericValue = value.replace(/[^0-9.]/g, '');
-                      if (numericValue === '' || !isNaN(parseFloat(numericValue))) {
-                        updateStemData(index, 'height', numericValue);
-                      }
-                    }}
-                    keyboardType="numeric"
-                  />
-                </IconInput>
+                {stemData.map((stem, index) => (
+                  <StemContainer key={index}>
+                    <StemTitle>Primary Stem {index + 1}</StemTitle>
+                    
+                    <IconInput>
+                      <MaterialIcons name="height" size={24} color="black" />
+                      <InputField
+                        placeholder="Height (in meters)"
+                        value={stem.height}
+                        onChangeText={(value) => {
+                          const numericValue = value.replace(/[^0-9.]/g, '');
+                          if (numericValue === '' || !isNaN(parseFloat(numericValue))) {
+                            updateStemData(index, 'height', numericValue);
+                          }
+                        }}
+                        keyboardType="numeric"
+                      />
+                    </IconInput>
 
-                <IconInput>
-                  <MaterialCommunityIcons name="diameter-outline" size={24} color="black" />
-                  <InputField
-                    placeholder="Circumference (in cm)"
-                    value={stem.circumference}
-                    onChangeText={(value) => {
-                      const numericValue = value.replace(/[^0-9.]/g, '');
-                      if (numericValue === '' || !isNaN(parseFloat(numericValue))) {
-                        updateStemData(index, 'circumference', numericValue);
-                      }
-                    }}
-                    keyboardType="numeric"
-                  />
-                </IconInput>
-              </StemContainer>
-            ))}
+                    <IconInput>
+                      <MaterialCommunityIcons name="diameter-outline" size={24} color="black" />
+                      <InputField
+                        placeholder="Circumference (in cm)"
+                        value={stem.circumference}
+                        onChangeText={(value) => {
+                          const numericValue = value.replace(/[^0-9.]/g, '');
+                          if (numericValue === '' || !isNaN(parseFloat(numericValue))) {
+                            updateStemData(index, 'circumference', numericValue);
+                          }
+                        }}
+                        keyboardType="numeric"
+                      />
+                    </IconInput>
+                  </StemContainer>
+                ))}
 
-            <Text style={{ color: 'red', marginTop: 10, marginBottom: 10, textAlign: 'center' }}>
-              *All fields are required
-            </Text>
+                <Text style={{ color: 'red', marginTop: 10, marginBottom: 10, textAlign: 'center' }}>
+                  *All fields are required
+                </Text>
 
-            <Button onPress={handleNext}>
-              <ButtonText>Next</ButtonText>
-            </Button>
-          </Card>
-        </View>
-      </Container>
-    </ScrollView>
+                <Button onPress={handleNext}>
+                  <ButtonText>Next</ButtonText>
+                </Button>
+              </Card>
+            </View>
+          </Container>
+        </ScrollView>
+      </ImageBackground>
+    </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: 'black',
+  },
+  backgroundImage: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+  },
+});

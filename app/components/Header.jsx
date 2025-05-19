@@ -9,8 +9,8 @@ const Header = () => {
   const route = useRoute();
   const { currentUser } = useAuth();
 
-  // Don't show header on HomeScreen when user is not logged in
-  if (route.name === 'Home' && !currentUser) {
+  // Don't show header on LoginScreen and SignUpScreen
+  if (route.name === 'LoginScreen' || route.name === 'SignUpScreen') {
     return null;
   }
 
@@ -18,12 +18,23 @@ const Header = () => {
     navigation.navigate('Profile');
   };
 
+  const handleBackPress = () => {
+    navigation.goBack();
+  };
+
   return (
     <View style={styles.header}>
-      <Text style={styles.title}>ECOLOG</Text>
+      <View style={styles.leftContainer}>
+        {route.name !== 'Home' && (
+          <TouchableOpacity onPress={handleBackPress} style={styles.backButton}>
+            <Ionicons name="arrow-back" size={24} color="white" />
+          </TouchableOpacity>
+        )}
+        <Text style={styles.title}>ECOLOG</Text>
+      </View>
       {currentUser && (
         <TouchableOpacity onPress={handleProfilePress} style={styles.profileButton}>
-          <Ionicons name="person-circle-outline" size={32} color="black" />
+          <Ionicons name="person-circle-outline" size={32} color="white" />
         </TouchableOpacity>
       )}
     </View>
@@ -39,6 +50,14 @@ const styles = StyleSheet.create({
     paddingTop: 40,
     paddingBottom: 10,
     backgroundColor: 'rgba(164, 195, 147, 0.54)',
+  },
+  leftContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  backButton: {
+    marginRight: 10,
+    padding: 4,
   },
   title: {
     fontSize: 24,
