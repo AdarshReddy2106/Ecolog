@@ -20,7 +20,7 @@ const ViewExcel = () => {
     <View style={styles.container}>
       {isAdmin && <AdminTreeFormHeader />}
       <ImageBackground
-        source={require("../assets/images/forest.png")}
+        source={require("../assets/images/forest.webp")}
         resizeMode="cover"
         style={styles.imagebackground}
       >

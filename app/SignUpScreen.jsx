@@ -61,10 +61,10 @@ const SignUpScreen = () => {
 
     return (
         <View style={styles.container}>
-            <ImageBackground source={require("../assets/images/blackwp.png")} style={styles.imagebackground}>
-                <Text style={styles.title}>Tree IQ</Text>
+            <ImageBackground source={require("../assets/images/blackwp.webp")} style={styles.imagebackground}>
+                <Text style={styles.title}>ECOLOG</Text>
                 <View style={styles.inputContainer}>
-                    <MyTextinput placeholder="Enter E-mail" value={email} onChangeText={setEmail} />
+                    <MyTextinput placeholder="Enter Valid E-mail" value={email} onChangeText={setEmail} />
                     <MyTextinput placeholder="Password" secureTextEntry value={password} onChangeText={setPassword} />
                     <MyTextinput placeholder="Confirm Password" secureTextEntry value={confirmPassword} onChangeText={setConfirmPassword} />
 

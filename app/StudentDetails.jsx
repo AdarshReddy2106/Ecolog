@@ -102,7 +102,7 @@ export default function StudentDetails() {
       <Card>
         <View style={{ alignItems: 'center', marginBottom: 10 }}>
           <Image 
-            source={require('../assets/images/tree-icon.png')} 
+            source={require('../assets/images/tree-icon.webp')} 
             style={{ width: 80, height: 80 }} 
           />
         </View>

@@ -63,25 +63,28 @@ const TreeDataForm = () => {
   const [treeId, setTreeId] = useState('');
   const [numBranches, setNumBranches] = useState('');
   const [isAdminInitialized, setIsAdminInitialized] = useState(false);
+  const [lastUserId, setLastUserId] = useState(null);
 
+  // Reset form when a new user starts
   useEffect(() => {
-    // Initialize form with context values
-    if (treeData) {
-      setTreeId(treeData.treeId || '');
-      setNumBranches(treeData.numBranches ? treeData.numBranches.toString() : '');
-    }
-  }, [treeData]);
-
-  // Use useFocusEffect to reset form when screen comes into focus
-  useFocusEffect(
-    React.useCallback(() => {
-      // Reset form data when screen is focused
+    if (currentUser?.email !== lastUserId) {
       setTreeId('');
       setNumBranches('');
-      resetTreeData();  // Reset the context data
-      
-      // If admin, initialize with admin details
-      if (currentUser?.email === 'a@gmail.com' && !isAdminInitialized) {
+      resetTreeData();
+      setLastUserId(currentUser?.email);
+    }
+  }, [currentUser]);
+
+  // Initialize form with context values only when navigating back
+  useFocusEffect(
+    React.useCallback(() => {
+      if (currentUser?.email === lastUserId && treeData) {
+        setTreeId(treeData.treeId || '');
+        setNumBranches(treeData.numBranches ? treeData.numBranches.toString() : '');
+      }
+
+      // Initialize admin data if needed
+      if (currentUser?.email === 'miyawaki.iitpkd@gmail.com' && !isAdminInitialized) {
         updateTreeData({
           studentName: 'admin',
           studentRollNo: '1',
@@ -90,7 +93,7 @@ const TreeDataForm = () => {
         });
         setIsAdminInitialized(true);
       }
-    }, [currentUser, isAdminInitialized])
+    }, [currentUser, lastUserId, treeData])
   );
 
   console.log('Current treeData:', treeData); // Add this for debugging
@@ -114,31 +117,31 @@ const TreeDataForm = () => {
     updateTreeData({
       treeId,
       numBranches: branchesNum,
-      isAdmin: currentUser?.email === 'a@gmail.com'
+      isAdmin: currentUser?.email === 'miyawaki.iitpkd@gmail.com'
     });
 
     navigation.navigate('BranchDetailsForm', {
       treeId,
       branches: branchesNum,
-      isAdmin: currentUser?.email === 'a@gmail.com'
+      isAdmin: currentUser?.email === 'miyawaki.iitpkd@gmail.com'
     });
   };
 
-  const isAdmin = currentUser?.email === 'a@gmail.com';
+  const isAdmin = currentUser?.email === 'miyawaki.iitpkd@gmail.com';
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <ImageBackground
-        source={require("../assets/images/blackwp.png")}
+        source={require("../assets/images/blackwp.webp")}
         style={styles.backgroundImage}
         resizeMode="cover"
       >
-        {isAdmin ? <AdminTreeFormHeader /> : <Header />}
+        <Header />
         <Container>
           <Card>
             <View style={styles.iconContainer}>
               <Image 
-                source={require('../assets/images/tree-icon.png')} 
+                source={require('../assets/images/tree-icon.webp')} 
                 style={styles.treeIcon}
                 resizeMode="contain"
               />

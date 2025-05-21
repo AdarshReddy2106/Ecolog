@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, Alert, SafeAreaView } from 'react-native';
 import { useAuth } from './AuthContext';
 import { useNavigation } from '@react-navigation/native';
 import { auth } from './firebaseConfig';
 import { supabase } from './supabaseConfig';
+import Header from './components/Header';
 
 export default function Profile() {
   const { currentUser } = useAuth();
@@ -65,12 +66,13 @@ export default function Profile() {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.safeArea}>
       <ImageBackground
-        source={require("../assets/images/blackwp.png")}
-        style={styles.imageBackground}
+        source={require("../assets/images/blackwp.webp")}
+        style={styles.backgroundImage}
         resizeMode="cover"
       >
+        <Header />
         <View style={styles.content}>
           <Text style={styles.title}>Profile</Text>
           
@@ -103,22 +105,24 @@ export default function Profile() {
           </TouchableOpacity>
         </View>
       </ImageBackground>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
+    backgroundColor: 'black',
   },
-  imageBackground: {
+  backgroundImage: {
     flex: 1,
     width: '100%',
+    height: '100%',
   },
   content: {
     flex: 1,
     padding: 20,
-    paddingTop: 60,
+    paddingTop: 20,
   },
   title: {
     fontSize: 32,
