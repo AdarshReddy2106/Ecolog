@@ -30,14 +30,16 @@ export async function saveTreeData(treeData, imageUri) {
     // Validate numeric fields
     const numBranches = parseInt(treeData.numBranches, 10);
     const stemData = treeData.stemData.map((stem, index) => {
-      if (!stem || typeof stem.height === 'undefined' || typeof stem.circumference === 'undefined') {
-        throw new Error(`Missing data for Primary Stem ${index + 1}`);
+      if (!stem || typeof stem.circumference === 'undefined') {
+        throw new Error(`Missing circumference data for Primary Stem ${index + 1}`);
       }
 
-      const height = parseFloat(stem.height);
+      // Height is optional, can be null or empty
+      const height = stem.height ? parseFloat(stem.height) : null;
       const circumference = parseFloat(stem.circumference);
 
-      if (isNaN(height) || height <= 0) {
+      // Only validate height if it's provided
+      if (height !== null && (isNaN(height) || height <= 0)) {
         throw new Error(`Invalid height for Primary Stem ${index + 1}`);
       }
       if (isNaN(circumference) || circumference <= 0) {
@@ -45,7 +47,7 @@ export async function saveTreeData(treeData, imageUri) {
       }
 
       return {
-        height,
+        height: height || '-', // Use '-' for null/empty height
         circumference
       };
     });
