@@ -208,7 +208,7 @@ export default function BranchDetailsForm() {
                 ))}
 
                 <Text style={{ color: 'red', marginTop: 10, marginBottom: 10, textAlign: 'center' }}>
-                  *All fields are required
+                  *All fields are required( height is optional)
                 </Text>
 
                 <Button onPress={handleNext}>
