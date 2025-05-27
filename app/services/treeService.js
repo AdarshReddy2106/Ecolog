@@ -34,13 +34,13 @@ export async function saveTreeData(treeData, imageUri) {
         throw new Error(`Missing circumference data for Primary Stem ${index + 1}`);
       }
 
-      // Height is optional - handle empty string, undefined, or null
-      let height = null;
+      // Height is optional - handle empty string, undefined, null, or invalid values
+      let height = '-';  // Default to '-' for any non-valid height
       if (stem.height !== undefined && stem.height !== null && stem.height !== '') {
-        height = parseFloat(stem.height);
-        // Only validate if height was provided and is invalid
-        if (isNaN(height) || height <= 0) {
-          throw new Error(`Invalid height for Primary Stem ${index + 1}`);
+        const parsedHeight = parseFloat(stem.height);
+        // Only use the height if it's a valid positive number
+        if (!isNaN(parsedHeight) && parsedHeight > 0) {
+          height = parsedHeight;
         }
       }
 
@@ -50,7 +50,7 @@ export async function saveTreeData(treeData, imageUri) {
       }
 
       return {
-        height: height || '-', // Use '-' for null/empty height
+        height,  // Will be '-' for any non-valid height
         circumference
       };
     });
