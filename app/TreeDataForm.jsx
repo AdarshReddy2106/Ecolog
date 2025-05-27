@@ -132,7 +132,7 @@ const TreeDataForm = () => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <ImageBackground
-        source={require("../assets/images/blackwp.png")}
+        source={require("../assets/images/blackwp.webp")}
         style={styles.backgroundImage}
         resizeMode="cover"
       >
@@ -141,7 +141,7 @@ const TreeDataForm = () => {
           <Card>
             <View style={styles.iconContainer}>
               <Image 
-                source={require('../assets/images/tree-icon.png')} 
+                source={require('../assets/images/tree-icon.webp')} 
                 style={styles.treeIcon}
                 resizeMode="contain"
               />

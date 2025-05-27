@@ -42,7 +42,7 @@ const Admin = () => {
     <SafeAreaView style={styles.container}>
       <AdminHeader />
       <ImageBackground
-        source={require("../assets/images/forest.png")}
+        source={require("../assets/images/forest.webp")}
         resizeMode="cover"
         style={styles.imageBackground}
       >

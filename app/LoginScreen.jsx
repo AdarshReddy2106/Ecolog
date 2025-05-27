@@ -80,7 +80,11 @@ const LoginScreen = () => {
 
     return (
         <View style={styles.container}>
+<<<<<<< HEAD
+            <ImageBackground source={require("../assets/images/blackwp.webp")} style={styles.imagebackground}>
+=======
             <ImageBackground source={require("../assets/images/blackwp.png")} style={styles.imagebackground}>
+>>>>>>> 9711b0f81006d0aebadeb28056ff6a6611d0e93d
                 <Text style={styles.title}>ECOLOG</Text>
                 <View style={styles.inputContainer}>
                     <MyTextinput placeholder="Enter Registered Email" value={email} onChangeText={setEmail} />

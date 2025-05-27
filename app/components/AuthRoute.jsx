@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { useAuth } from '../AuthContext';
 import { useNavigation } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function AuthRoute() {
   const { currentUser, isAdmin } = useAuth();
@@ -17,19 +16,11 @@ export default function AuthRoute() {
             routes: [{ name: 'Admin' }],
           });
         } else {
-          // For regular users, check if they have completed student details
-          const storedDetails = await AsyncStorage.getItem(`studentDetails_${currentUser.email}`);
-          if (storedDetails) {
-            navigation.reset({
-              index: 0,
-              routes: [{ name: 'TreeDataForm' }],
-            });
-          } else {
-            navigation.reset({
-              index: 0,
-              routes: [{ name: 'StudentDetails' }],
-            });
-          }
+          // For regular users, always go to HomeScreen
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'HomeScreen' }],
+          });
         }
       } else {
         // If no user is logged in, go to HomeScreen

@@ -47,7 +47,7 @@ export default function HomeScreen() {
     <View style={styles.container}>
       {currentUser && <Header />}
       <ImageBackground
-        source={require("../assets/images/forest.png")}
+        source={require("../assets/images/forest.webp")}
         resizeMode="cover"
         style={styles.imagebackground}
       >

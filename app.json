@@ -4,11 +4,11 @@
     "slug": "ecolog",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/tree-icon.png",
+    "icon": "./assets/images/tree-icon.webp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/images/tree-icon.png",
+      "image": "./assets/images/tree-icon.webp",
       "resizeMode": "contain",
       "backgroundColor": "#d8e8d2"
     },
@@ -16,11 +16,12 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.adarsh_21.treeiq"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/tree-icon.png",
+        "foregroundImage": "./assets/images/tree-icon.webp",
         "backgroundColor": "#d8e8d2"
       }
     },
@@ -32,16 +33,34 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/tree-icon.png",
+          "image": "./assets/images/tree-icon.webp",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#d8e8d2"
         }
-      ]
+      ],
+      "expo-dev-client"
     ],
     "experiments": {
       "typedRoutes": true
+<<<<<<< HEAD
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "482a6c94-5248-4246-a552-0bbb51e4c24e"
+      }
+    },
+    "developmentClient": {
+      "silentLaunch": true
+    }
+  }
+}
+=======
     }
   }
 }
 
+>>>>>>> 9711b0f81006d0aebadeb28056ff6a6611d0e93d

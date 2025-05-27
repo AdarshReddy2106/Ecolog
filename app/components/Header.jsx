@@ -25,7 +25,11 @@ const Header = () => {
   return (
     <View style={styles.header}>
       <View style={styles.leftContainer}>
+<<<<<<< HEAD
+        {route.name !== 'Home' && route.name !== 'TreeDataForm' && (
+=======
         {route.name !== 'Home' && (
+>>>>>>> 9711b0f81006d0aebadeb28056ff6a6611d0e93d
           <TouchableOpacity onPress={handleBackPress} style={styles.backButton}>
             <Ionicons name="arrow-back" size={24} color="white" />
           </TouchableOpacity>
