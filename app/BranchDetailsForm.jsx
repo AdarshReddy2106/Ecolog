@@ -158,7 +158,11 @@ export default function BranchDetailsForm() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <ImageBackground
+<<<<<<< HEAD
         source={require("../assets/images/blackwp.webp")}
+=======
+        source={require("../assets/images/blackwp.png")}
+>>>>>>> 9711b0f81006d0aebadeb28056ff6a6611d0e93d
         style={styles.backgroundImage}
         resizeMode="cover"
       >
@@ -168,7 +172,11 @@ export default function BranchDetailsForm() {
             <View style={{ flex:1, justifyContent: 'center', alignItems: 'center', width: '100%'}}>
               <Card style={{marginLeft: '1'}}>
                 <View style={{ alignItems: 'center', marginBottom: 10 }}>
+<<<<<<< HEAD
                   <Image source={require('../assets/images/tree-icon.webp')} style={{ width: 80, height: 80 }} />
+=======
+                  <Image source={require('../assets/images/tree-icon.png')} style={{ width: 80, height: 80 }} />
+>>>>>>> 9711b0f81006d0aebadeb28056ff6a6611d0e93d
                 </View>
                 
                 {stemData.map((stem, index) => (
@@ -208,7 +216,11 @@ export default function BranchDetailsForm() {
                 ))}
 
                 <Text style={{ color: 'red', marginTop: 10, marginBottom: 10, textAlign: 'center' }}>
+<<<<<<< HEAD
                   *All fields are required( height is optional)
+=======
+                  *All fields are required
+>>>>>>> 9711b0f81006d0aebadeb28056ff6a6611d0e93d
                 </Text>
 
                 <Button onPress={handleNext}>

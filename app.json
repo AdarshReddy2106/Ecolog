@@ -23,8 +23,7 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/tree-icon.webp",
         "backgroundColor": "#d8e8d2"
-      },
-      "package": "com.adarsh_21.treeiq"
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -44,6 +43,7 @@
     ],
     "experiments": {
       "typedRoutes": true
+<<<<<<< HEAD
     },
     "extra": {
       "router": {
@@ -58,3 +58,9 @@
     }
   }
 }
+=======
+    }
+  }
+}
+
+>>>>>>> 9711b0f81006d0aebadeb28056ff6a6611d0e93d
