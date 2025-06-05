@@ -68,11 +68,7 @@ export default function Profile() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <ImageBackground
-<<<<<<< HEAD
         source={require("../assets/images/blackwp.webp")}
-=======
-        source={require("../assets/images/blackwp.png")}
->>>>>>> 9711b0f81006d0aebadeb28056ff6a6611d0e93d
         style={styles.backgroundImage}
         resizeMode="cover"
       >
