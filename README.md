@@ -43,7 +43,7 @@ Ecolog is a React Native mobile application that helps track and manage tree dat
 
 1. Clone the repository:
 ```bash
-git clone [<https://github.com/AdarshReddy2106/Ecolog.git>](https://github.com/AdarshReddy2106/Ecolog.git)
+git clone https://github.com/AdarshReddy2106/Ecolog.git
 cd Ecolog
 ```
 
@@ -97,7 +97,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Acknowledgments
 Contributors:
-Adarsh @AdarshReddy2106
-Harshitha @Harshi-2706
+Adarsh @AdarshReddy2106, Harshitha @Harshi-2706
 
 
