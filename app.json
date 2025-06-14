@@ -26,7 +26,7 @@
       }
     },
     "web": {
-      "favicon": "./assets/images/tree-icon.webp"
+      "favicon": "./assets/favicon.png"
     },
     "plugins": [
       "expo-router",
