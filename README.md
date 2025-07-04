@@ -96,7 +96,8 @@ gradlew assembleRelease
 This project is licensed under the Apache-2.0 license - see the LICENSE file for details.
 
 ## Acknowledgments
-Contributors:
-Adarsh @AdarshReddy2106, Harshitha @Harshi-2706
+## Contributors
+- [Adarsh](https://github.com/AdarshReddy2106)
+- [Harshitha](https://github.com/Harshi-2706)
 
 
